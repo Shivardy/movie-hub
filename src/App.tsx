@@ -1,4 +1,5 @@
 import React from 'react';
+import { SkeletonTheme } from 'react-loading-skeleton';
 import { ThemeProvider } from 'styled-components';
 import { AppContextProvider } from './AppContext';
 import Trending from './Components/Trending';
@@ -13,7 +14,12 @@ function App() {
     <ThemeProvider theme={theme}>
       <GlobalStyles />
       <AppContextProvider>
-        <Trending />
+        <SkeletonTheme
+          color={theme.colors.surface2}
+          highlightColor={theme.colors.surface1}
+        >
+          <Trending />
+        </SkeletonTheme>
       </AppContextProvider>
     </ThemeProvider>
   );

@@ -1,17 +1,20 @@
 import { useReducer } from 'react';
 import createContext from './hooks/createContext';
-import { TrendingByDay } from './types/TrendingByDay';
+import { Trending } from './types/Trending';
 
 type State = {
-  trendingByDay: TrendingByDay | null;
+  trending: Trending;
 };
 const initialState: State = {
-  trendingByDay: null,
+  trending: {
+    movie: [],
+    tv: [],
+  },
 };
 
 type ActionType = {
   type: 'UPDATE_TRENDING_BY_DAY';
-  payload: TrendingByDay;
+  payload: Trending;
 };
 
 export type ActionTypes = ActionType['type'];
@@ -21,7 +24,7 @@ function appReducer(state: State, action: ActionType): State {
     case 'UPDATE_TRENDING_BY_DAY':
       return {
         ...state,
-        trendingByDay: action.payload,
+        trending: action.payload,
       };
 
     default:

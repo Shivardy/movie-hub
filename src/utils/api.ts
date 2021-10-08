@@ -1,30 +1,35 @@
-import { TrendingByDay } from '../types/TrendingByDay';
-import environment from './environment';
+import { Trending, TrendingMovies, TrendingTv } from '../types/Trending';
+import { getUrl } from './utils';
 
-const { apiKey, baseURL, imageBaseURL } = environment;
+export const fetchTrending = async (): Promise<Trending> => {
+  const movieUrl = getUrl('trending/movie/day');
+  const tvUrl = getUrl('trending/tv/day');
 
-export const fetchTrending = async (): Promise<TrendingByDay> => {
-  const path = 'trending/movie/day';
-  const url = `${baseURL}${path}?api_key=${apiKey}`;
+  const [trendingMovies, trendingShows] = await Promise.all(
+    [movieUrl, tvUrl].map(async (url) => {
+      const response = await fetch(url);
+      return response.json();
+    })
+  );
 
-  const response = await fetch(url);
-  const data = await response.json();
-  return data;
+  const movie = (trendingMovies as TrendingMovies).results.map(
+    ({ title, id, backdrop_path, poster_path, vote_average }) => ({
+      title,
+      id,
+      backdrop_path,
+      poster_path,
+      vote_average,
+    })
+  );
+
+  const tv = (trendingShows as TrendingTv).results.map(
+    ({ name, id, backdrop_path, poster_path, vote_average }) => ({
+      title: name,
+      id,
+      backdrop_path,
+      poster_path,
+      vote_average,
+    })
+  );
+  return { movie, tv };
 };
-
-type ImageType = 'poster' | 'backdrop' | 'profile';
-type Size<T extends ImageType> = T extends 'poster'
-  ? 'w92' | 'w154' | 'w185' | 'w342' | 'w500' | 'w780' | 'original'
-  : T extends 'backdrop'
-  ? 'w300' | 'w780' | 'w1280' | 'original'
-  : T extends 'profile'
-  ? 'w45' | 'w185' | 'original'
-  : never;
-
-export function getImageURL<T extends ImageType>(
-  path: string,
-  type: T,
-  size: Size<T>
-) {
-  return `${imageBaseURL}${size}${path}`;
-}

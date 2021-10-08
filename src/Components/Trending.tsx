@@ -1,118 +1,103 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { appContext } from '../AppContext';
+import MediaScroller from '../Elements/MediaScroller';
 import useAsync from '../hooks/useAsync';
-import { fetchTrending, getImageURL } from '../utils/api';
+import { MediaType } from '../types/Trending';
+import { fetchTrending } from '../utils/api';
+import { getImageURL } from '../utils/utils';
 
 const H1 = styled.h1`
-  font-size: ${(props) => props.theme.size.xxxl};
-  padding-inline-start: ${(props) => props.theme.size.xs};
-  padding-inline-end: ${(props) => props.theme.size.xs};
+  font-size: ${(props) => props.theme.size.xl};
 `;
 
-const MediaScroller = styled.ul`
+const Header = styled.header`
   display: grid;
   grid-auto-flow: column;
-  gap: ${(props) => props.theme.size.lg};
-
-  padding-inline-start: ${(props) => props.theme.size.lg};
-  padding-inline-end: ${(props) => props.theme.size.lg};
-  padding-block-start: ${(props) => props.theme.size.sm};
-  padding-block-end: ${(props) => props.theme.size.sm};
-
-  overflow-x: auto;
-  overscroll-behavior-inline: contain;
-  scroll-snap-type: inline mandatory;
-  scroll-padding-left: ${(props) => props.theme.size.lg};
-  scroll-padding-right: ${(props) => props.theme.size.lg};
-  scroll-padding-inline: ${(props) => props.theme.size.lg};
-
-  @media (prefers-reduced-motion: no-preference) {
-    & {
-      scroll-behavior: smooth;
-    }
-  }
-
-  & > li {
-    display: inline-block;
-
-    &:last-of-type figure {
-      position: relative;
-
-      &::after {
-        content: '';
-        position: absolute;
-
-        inline-size: ${(props) => props.theme.size.lg};
-        block-size: 100%;
-
-        inset-block-start: 0;
-        inset-inline-end: calc(${(props) => props.theme.size.lg} * -1);
-      }
-    }
-  }
+  align-items: center;
+  width: min-content;
+  padding-inline: ${(props) => props.theme.size.lg};
+  padding-block: ${(props) => props.theme.size.xs};
+  grid-gap: ${(props) => props.theme.size.xs};
 `;
 
-const Figure = styled.figure`
-  scroll-snap-align: start;
-
+const ButtonContainer = styled.div`
   display: grid;
-  gap: calc(${(props) => props.theme.size.lg} / 2);
-  margin: 0;
+  grid-auto-flow: column;
+  grid-gap: ${(props) => props.theme.size.xs};
+  width: min-content;
+  border-radius: ${(props) => props.theme.size.md};
+  border: 1px solid ${({ theme }) => theme.colors.text1};
+`;
 
+const Button = styled.button<{ active?: boolean }>`
+  width: min-content;
+  height: min-content;
+  color: ${({ theme, active }) =>
+    active ? theme.colors.surface1 : theme.colors.text1};
+  border-radius: ${(props) => props.theme.size.md};
+  background-color: ${({ theme: { colors }, active }) =>
+    active ? colors.text1 : colors.surface1};
+  font-weight: ${(props) => (props.active ? 600 : 400)};
   cursor: pointer;
-  user-select: none;
+  border: none;
 
-  & > picture {
-    inline-size: calc(${(props) => props.theme.size.lg} * 8);
-    block-size: calc(${(props) => props.theme.size.lg} * 8);
-  }
-
-  & img {
-    inline-size: 100%;
-    block-size: 100%;
-    object-fit: cover;
-
-    border-radius: 1ex;
-    overflow: hidden;
-
-    background-image: linear-gradient(to bottom, hsl(0 0% 40%), hsl(0 0% 20%));
-  }
+  padding-block: ${(props) => props.theme.size.xxs};
+  padding-inline: ${(props) => props.theme.size.xl};
 `;
 
 const Trending = () => {
-  const [trending, loadTrending] = useAsync(
+  const [selectedMedia, setSelectedMedia] = useState<MediaType>(
+    MediaType.Movie
+  );
+
+  const [trendingStatus, loadTrending] = useAsync(
     fetchTrending,
     'UPDATE_TRENDING_BY_DAY'
   );
 
-  const { trendingByDay } = appContext();
-  console.log(trending, trendingByDay);
+  const {
+    trending: { movie, tv },
+  } = appContext();
+
   useEffect(() => {
     loadTrending();
   }, [loadTrending]);
 
+  const data = selectedMedia === 'movie' ? movie : tv;
+
+  const mediaScrollerList =
+    data.map(({ id, title, poster_path }) => ({
+      id,
+      title,
+      image: poster_path && getImageURL(poster_path, 'poster', 'w185'),
+    })) || [];
+
   return (
     <section>
-      <H1>Trending</H1>
-      {trending.state === 'SUCCESS' && (
-        <MediaScroller>
-          {trendingByDay?.results.map((item) => (
-            <li key={item.id}>
-              <Figure>
-                <picture>
-                  <img
-                    alt={item.title}
-                    loading="lazy"
-                    src={getImageURL(item.poster_path, 'poster', 'w185')}
-                  />
-                </picture>
-                <figcaption>{item.title}</figcaption>
-              </Figure>
-            </li>
-          ))}
-        </MediaScroller>
-      )}
+      <Header>
+        <H1>Trending</H1>
+        <ButtonContainer>
+          <Button
+            active={selectedMedia === MediaType.Movie}
+            onClick={() => setSelectedMedia(MediaType.Movie)}
+          >
+            Movies
+          </Button>
+          <Button
+            active={selectedMedia === MediaType.Tv}
+            onClick={() => setSelectedMedia(MediaType.Tv)}
+          >
+            TV
+          </Button>
+        </ButtonContainer>
+      </Header>
+
+      <MediaScroller
+        list={mediaScrollerList}
+        size="10em:15em"
+        loading={trendingStatus.state === 'LOADING'}
+      />
     </section>
   );
 };
