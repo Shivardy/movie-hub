@@ -1,14 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { appContext } from '../AppContext';
+import Button from '../Elements/Button';
 import MediaScroller from '../Elements/MediaScroller';
 import useAsync from '../hooks/useAsync';
 import { MediaType } from '../types/Trending';
 import { fetchTrending } from '../utils/api';
 import { getImageURL } from '../utils/utils';
 
-const H1 = styled.h1`
-  font-size: ${(props) => props.theme.size.xl};
+const Section = styled.section`
+  background-image: linear-gradient(
+    to bottom,
+    ${(props) => props.theme.colors.surface2},
+    ${(props) => props.theme.colors.surface3}
+  );
 `;
 
 const Header = styled.header`
@@ -19,31 +24,23 @@ const Header = styled.header`
   padding-inline: ${(props) => props.theme.size.lg};
   padding-block: ${(props) => props.theme.size.xs};
   grid-gap: ${(props) => props.theme.size.xs};
+
+  & h1 {
+    font-size: ${(props) => props.theme.size.xl};
+  }
 `;
 
 const ButtonContainer = styled.div`
   display: grid;
   grid-auto-flow: column;
-  grid-gap: ${(props) => props.theme.size.xs};
   width: min-content;
   border-radius: ${(props) => props.theme.size.md};
   border: 1px solid ${({ theme }) => theme.colors.text1};
-`;
 
-const Button = styled.button<{ active?: boolean }>`
-  width: min-content;
-  height: min-content;
-  color: ${({ theme, active }) =>
-    active ? theme.colors.surface1 : theme.colors.text1};
-  border-radius: ${(props) => props.theme.size.md};
-  background-color: ${({ theme: { colors }, active }) =>
-    active ? colors.text1 : colors.surface1};
-  font-weight: ${(props) => (props.active ? 600 : 400)};
-  cursor: pointer;
-  border: none;
-
-  padding-block: ${(props) => props.theme.size.xxs};
-  padding-inline: ${(props) => props.theme.size.xl};
+  & > button {
+    border: none;
+    border-radius: inherit;
+  }
 `;
 
 const Trending = () => {
@@ -67,28 +64,33 @@ const Trending = () => {
   const data = selectedMedia === 'movie' ? movie : tv;
 
   const mediaScrollerList =
-    data.map(({ id, title, poster_path }) => ({
+    data.map(({ id, title, poster_path, release_date }) => ({
       id,
       title,
       image: poster_path && getImageURL(poster_path, 'poster', 'w185'),
+      caption: new Date(release_date).toLocaleDateString('en-us', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+      }),
     })) || [];
 
   return (
-    <section>
+    <Section>
       <Header>
-        <H1>Trending</H1>
+        <h1>Trending</h1>
         <ButtonContainer>
           <Button
-            active={selectedMedia === MediaType.Movie}
+            primary={selectedMedia === MediaType.Movie}
             onClick={() => setSelectedMedia(MediaType.Movie)}
           >
-            Movies
+            {MediaType.Movie}
           </Button>
           <Button
-            active={selectedMedia === MediaType.Tv}
+            primary={selectedMedia === MediaType.Tv}
             onClick={() => setSelectedMedia(MediaType.Tv)}
           >
-            TV
+            {MediaType.Tv}
           </Button>
         </ButtonContainer>
       </Header>
@@ -98,7 +100,7 @@ const Trending = () => {
         size="10em:15em"
         loading={trendingStatus.state === 'LOADING'}
       />
-    </section>
+    </Section>
   );
 };
 

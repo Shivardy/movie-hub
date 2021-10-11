@@ -7,7 +7,7 @@ const MediaScrollerUL = styled.ul`
   gap: ${(props) => props.theme.size.xl};
 
   padding-inline: ${(props) => props.theme.size.lg};
-  padding-block: ${(props) => props.theme.size.lg};
+  padding-block: ${(props) => props.theme.size.sm};
 
   overflow-x: auto;
   overscroll-behavior-inline: contain;
@@ -71,8 +71,6 @@ const Image = styled.img<MediaItemProps>`
   block-size: ${(props) => props.height};
   object-fit: cover;
 
-  box-shadow: 0rem 2rem 5rem ${(props) => props.theme.colors.surfaceShadow};
-
   border-radius: 1ex;
   border: none;
   overflow: hidden;
@@ -82,7 +80,15 @@ const Image = styled.img<MediaItemProps>`
 
 const Figcaption = styled.figcaption`
   line-height: ${(props) => props.theme.size.md};
+  font-weight: 600;
   font-size: ${(props) => props.theme.size.md};
+
+  & > p {
+    font-size: ${(props) => props.theme.size.sm};
+    font-weight: 400;
+    color: ${(props) => props.theme.colors.text2};
+    padding-block: ${(props) => props.theme.size.sm};
+  }
 `;
 
 type MediaScrollerProps = {
@@ -90,6 +96,7 @@ type MediaScrollerProps = {
     id: number;
     image: string;
     title: string;
+    caption?: string;
   }[];
   size?: `${number}em:${number}em`;
   loading?: boolean;
@@ -127,6 +134,7 @@ const MediaScroller = ({
                   <Skeleton width="65%" />
                 </>
               )}
+              {item.caption && <p>{item.caption}</p>}
             </Figcaption>
           </Figure>
         </MediaItem>
