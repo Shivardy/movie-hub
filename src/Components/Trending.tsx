@@ -3,8 +3,9 @@ import styled from 'styled-components';
 import { appContext } from '../AppContext';
 import Button from '../Elements/Button';
 import MediaScroller from '../Elements/MediaScroller';
+import { ButtonContainer, Header } from '../Elements/StyledElements';
 import useAsync from '../hooks/useAsync';
-import { MediaType } from '../types/Trending';
+import { MediaType } from '../types/common';
 import { fetchTrending } from '../utils/api';
 import { getImageURL } from '../utils/utils';
 
@@ -14,33 +15,6 @@ const Section = styled.section`
     ${(props) => props.theme.colors.surface2},
     ${(props) => props.theme.colors.surface3}
   );
-`;
-
-const Header = styled.header`
-  display: grid;
-  grid-auto-flow: column;
-  align-items: center;
-  width: min-content;
-  padding-inline: ${(props) => props.theme.size.lg};
-  padding-block: ${(props) => props.theme.size.xs};
-  grid-gap: ${(props) => props.theme.size.xs};
-
-  & h1 {
-    font-size: ${(props) => props.theme.size.xl};
-  }
-`;
-
-const ButtonContainer = styled.div`
-  display: grid;
-  grid-auto-flow: column;
-  width: min-content;
-  border-radius: ${(props) => props.theme.size.md};
-  border: 1px solid ${({ theme }) => theme.colors.text1};
-
-  & > button {
-    border: none;
-    border-radius: inherit;
-  }
 `;
 
 const Trending = () => {

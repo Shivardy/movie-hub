@@ -7,7 +7,7 @@ const MediaScrollerUL = styled.ul`
   gap: ${(props) => props.theme.size.xl};
 
   padding-inline: ${(props) => props.theme.size.lg};
-  padding-block: ${(props) => props.theme.size.sm};
+  padding-block: ${(props) => props.theme.size.xs};
 
   overflow-x: auto;
   overscroll-behavior-inline: contain;

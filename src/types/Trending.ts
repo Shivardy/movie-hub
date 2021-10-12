@@ -1,3 +1,5 @@
+import { Media, MediaType } from './common';
+
 export interface TrendingMovies {
   page: number;
   results: TrendingMoviesResult[];
@@ -23,12 +25,7 @@ interface TrendingMoviesResult {
   media_type: MediaType;
 }
 
-export enum MediaType {
-  Movie = 'movie',
-  Tv = 'tv',
-}
-
-export enum OriginalLanguage {
+enum OriginalLanguage {
   En = 'en',
   Nl = 'nl',
 }
@@ -56,14 +53,7 @@ interface TrendingTvResult {
   popularity: number;
   media_type: MediaType;
 }
-type Media = {
-  title: string;
-  id: number;
-  backdrop_path: string;
-  poster_path: string;
-  vote_average: number;
-  release_date: string;
-};
+
 export type Trending = {
   movie: Media[];
   tv: Media[];

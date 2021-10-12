@@ -1,4 +1,5 @@
 export type ImageType = 'poster' | 'backdrop' | 'profile';
+
 export type Size<T extends ImageType> = T extends 'poster'
   ? 'w92' | 'w154' | 'w185' | 'w342' | 'w500' | 'w780' | 'original'
   : T extends 'backdrop'
@@ -6,3 +7,17 @@ export type Size<T extends ImageType> = T extends 'poster'
   : T extends 'profile'
   ? 'w45' | 'w185' | 'original'
   : never;
+
+export type Media = {
+  title: string;
+  id: number;
+  backdrop_path: string;
+  poster_path: string;
+  vote_average: number;
+  release_date: string;
+};
+
+export enum MediaType {
+  Movie = 'movie',
+  Tv = 'tv',
+}

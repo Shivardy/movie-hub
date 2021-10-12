@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-type StyledButtonProps = { primary: boolean; secondary: boolean };
+type StyledButtonProps = { primary: boolean };
 const StyledButton = styled.button<StyledButtonProps>`
   width: min-content;
   height: min-content;
@@ -32,26 +32,22 @@ const StyledButton = styled.button<StyledButtonProps>`
 type ButtonOwnProps = {
   onClick: React.MouseEventHandler<HTMLButtonElement>;
   children: React.ReactNode;
-  disabled?: boolean;
+  primary?: boolean;
 };
 
 type ButtonProps = ButtonOwnProps &
   React.ButtonHTMLAttributes<HTMLButtonElement>;
 
-type PrimaryButton = ButtonProps & { primary?: boolean; secondary?: never };
-type SecondaryButton = ButtonProps & { primary?: never; secondary?: boolean };
 const Button = ({
   primary = true,
-  secondary = false,
   onClick,
   children,
   disabled = false,
   ...rest
-}: PrimaryButton | SecondaryButton) => {
+}: ButtonProps) => {
   return (
     <StyledButton
       primary={primary}
-      secondary={secondary}
       onClick={onClick}
       disabled={disabled}
       {...rest}

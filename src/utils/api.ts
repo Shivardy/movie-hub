@@ -1,4 +1,7 @@
+import { Media } from '../types/common';
+import { PopularMovies } from '../types/PopularMovies';
 import { Trending, TrendingMovies, TrendingTv } from '../types/Trending';
+import { UpcomingMovies } from '../types/UpcomingMovies';
 import { getUrl } from './utils';
 
 export const fetchTrending = async (): Promise<Trending> => {
@@ -49,4 +52,50 @@ export const fetchTrending = async (): Promise<Trending> => {
     })
   );
   return { movie, tv };
+};
+
+export const fetchPopular = async (): Promise<Media[]> => {
+  const response = await fetch(getUrl('movie/popular'));
+  const data = await response.json();
+  const movies = (data as PopularMovies).results.map(
+    ({
+      title,
+      id,
+      backdrop_path,
+      poster_path,
+      vote_average,
+      release_date,
+    }) => ({
+      title,
+      id,
+      backdrop_path,
+      poster_path,
+      vote_average,
+      release_date,
+    })
+  );
+  return movies;
+};
+
+export const fetchUpcoming = async (): Promise<Media[]> => {
+  const response = await fetch(getUrl('movie/upcoming'));
+  const data = await response.json();
+  const movies = (data as UpcomingMovies).results.map(
+    ({
+      title,
+      id,
+      backdrop_path,
+      poster_path,
+      vote_average,
+      release_date,
+    }) => ({
+      title,
+      id,
+      backdrop_path,
+      poster_path,
+      vote_average,
+      release_date,
+    })
+  );
+  return movies;
 };

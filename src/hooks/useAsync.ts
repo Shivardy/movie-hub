@@ -20,6 +20,7 @@ export default function useAsync<T extends (...args: any[]) => Promise<any>>(
   const callback = useCallback(
     async (...args: Parameters<T>) => {
       try {
+        setState({ state: 'LOADING' });
         const data = await fn(...args);
         setState({ state: 'SUCCESS', data });
         if (type) {

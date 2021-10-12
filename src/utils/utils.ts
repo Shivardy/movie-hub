@@ -1,4 +1,4 @@
-import { ImageType, Size } from '../types/Image';
+import { ImageType, Size } from '../types/common';
 import environment from './environment';
 
 const { apiKey, baseURL, imageBaseURL } = environment;
