@@ -4,7 +4,7 @@ import Button from '../Elements/Button';
 import MediaScroller from '../Elements/MediaScroller';
 import { ButtonContainer, Header } from '../Elements/StyledElements';
 import useAsync from '../hooks/useAsync';
-import { fetchPopular, fetchUpcoming } from '../utils/api';
+import { fetchPopularMovies, fetchUpcomingMovies } from '../services/api';
 import { getImageURL } from '../utils/utils';
 
 enum MovieType {
@@ -15,7 +15,7 @@ const DiscoverMovies = () => {
   const [movieType, setMovieType] = useState<MovieType>(MovieType.Popular);
 
   const [movies, loadMovies] = useAsync(
-    movieType === MovieType.Popular ? fetchPopular : fetchUpcoming,
+    movieType === MovieType.Popular ? fetchPopularMovies : fetchUpcomingMovies,
     movieType === MovieType.Popular
       ? 'UPDATE_POPULAR_MOVIES'
       : 'UPDATE_UPCOMING_MOVIES'
@@ -43,7 +43,7 @@ const DiscoverMovies = () => {
       }),
     })
   );
-  console.log(movies);
+
   return (
     <section id="discover-movies">
       <Header>

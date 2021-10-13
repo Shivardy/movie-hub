@@ -1,7 +1,28 @@
+export interface PopularMovies {
+  page: number;
+  results: MovieResult[];
+  total_pages: number;
+  total_results: number;
+}
+
 export interface UpcomingMovies {
   dates: Dates;
   page: number;
-  results: Result[];
+  results: MovieResult[];
+  total_pages: number;
+  total_results: number;
+}
+
+export interface TrendingMovies {
+  page: number;
+  results: MovieResult[];
+  total_pages: number;
+  total_results: number;
+}
+
+export interface GenreMovies {
+  page: number;
+  results: MovieResult[];
   total_pages: number;
   total_results: number;
 }
@@ -11,7 +32,7 @@ interface Dates {
   minimum: string;
 }
 
-interface Result {
+export interface MovieResult {
   adult: boolean;
   backdrop_path: string;
   genre_ids: number[];

@@ -2,6 +2,7 @@ import React from 'react';
 import { SkeletonTheme } from 'react-loading-skeleton';
 import { ThemeProvider } from 'styled-components';
 import { AppContextProvider } from './AppContext';
+import ContentByGenres from './Components/ContentByGenres';
 import DiscoverMovies from './Components/DiscoverMovies';
 import Trending from './Components/Trending';
 import useDarkMode from './hooks/useDarkMode';
@@ -21,6 +22,7 @@ function App() {
         >
           <Trending />
           <DiscoverMovies />
+          <ContentByGenres />
         </SkeletonTheme>
       </AppContextProvider>
     </ThemeProvider>

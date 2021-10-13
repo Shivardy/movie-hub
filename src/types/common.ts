@@ -21,3 +21,47 @@ export enum MediaType {
   Movie = 'movie',
   Tv = 'tv',
 }
+
+export type Genre = {
+  id: number;
+  name: string;
+  data: Media[];
+};
+
+export type State = {
+  movies: {
+    upcoming: Media[];
+    popular: Media[];
+    trending: Media[];
+    genres: Genre[];
+  };
+  tv: {
+    trending: Media[];
+    genres: Genre[];
+  };
+};
+
+export type ActionObjects =
+  | {
+      type:
+        | 'UPDATE_TRENDING_MOVIES_BY_DAY'
+        | 'UPDATE_TRENDING_TV_BY_DAY'
+        | 'UPDATE_UPCOMING_MOVIES'
+        | 'UPDATE_POPULAR_MOVIES';
+      payload: Media[];
+    }
+  | ContentByGenre;
+
+export type ContentByGenre = {
+  type: 'UPDATE_MOVIES_BY_GENRE' | 'UPDATE_TV_BY_GENRE';
+  payload: {
+    data: Media[];
+    genreId: number;
+  };
+};
+
+export type ActionTypes = ActionObjects['type'];
+
+export interface AppContext extends State {
+  dispatch: React.Dispatch<ActionObjects>;
+}

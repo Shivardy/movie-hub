@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
-import { ActionTypes, appContext } from '../AppContext';
+import { appContext } from '../AppContext';
+import { ActionTypes } from './../types/common';
 
 type AsyncState<R> =
   | { state: 'LOADING' }
