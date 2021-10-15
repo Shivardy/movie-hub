@@ -71,6 +71,20 @@ export default function appReducer(state: State, action: ActionObjects): State {
       };
     }
 
+    case 'UPDATE_GENRES': {
+      return {
+        ...state,
+        tv: {
+          ...state.tv,
+          genres: action.payload.tvGenres,
+        },
+        movies: {
+          ...state.movies,
+          genres: action.payload.movieGenres,
+        },
+      };
+    }
+
     default:
       return state;
   }

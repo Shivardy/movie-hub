@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import styled from 'styled-components';
 import { appContext } from '../AppContext';
 import Button from '../Elements/Button';
 import MediaScroller from '../Elements/MediaScroller';
@@ -11,6 +12,15 @@ enum MovieType {
   Popular = 'popular',
   Upcoming = 'upcoming',
 }
+
+const Section = styled.section`
+  background-image: linear-gradient(
+    to bottom,
+    ${(props) => props.theme.colors.surface2},
+    ${(props) => props.theme.colors.surface3}
+  );
+`;
+
 const DiscoverMovies = () => {
   const [movieType, setMovieType] = useState<MovieType>(MovieType.Popular);
 
@@ -35,7 +45,8 @@ const DiscoverMovies = () => {
     ({ id, title, backdrop_path, release_date }) => ({
       id,
       title,
-      image: backdrop_path && getImageURL(backdrop_path, 'backdrop', 'w300'),
+      image:
+        backdrop_path && getImageURL(backdrop_path, 'backdrop', 'original'),
       caption: new Date(release_date).toLocaleDateString('en-us', {
         year: 'numeric',
         month: 'short',
@@ -45,7 +56,7 @@ const DiscoverMovies = () => {
   );
 
   return (
-    <section id="discover-movies">
+    <Section id="discover-movies">
       <Header>
         <h1>Discover Movies</h1>
         <ButtonContainer>
@@ -67,9 +78,9 @@ const DiscoverMovies = () => {
       <MediaScroller
         list={mediaScrollerList}
         loading={movies.state === 'LOADING'}
-        size="16em:9em"
+        ratio="16/9"
       />
-    </section>
+    </Section>
   );
 };
 

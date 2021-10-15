@@ -4,11 +4,20 @@ import Button from '../Elements/Button';
 import MediaScroller from '../Elements/MediaScroller';
 import { ButtonContainer, Header } from '../Elements/StyledElements';
 import useAsync from '../hooks/useAsync';
-import { fetchMoviesByGenre, fetchTvByGenre } from '../services/api';
+import {
+  fetchGenres,
+  fetchMoviesByGenre,
+  fetchTvByGenre,
+} from '../services/api';
 import { Genre, MediaType } from '../types/common';
 import { getImageURL } from '../utils/utils';
 
 const ContentByGenres = () => {
+  const [status, loadGenre] = useAsync(fetchGenres, 'UPDATE_GENRES');
+  useEffect(() => {
+    loadGenre();
+  }, [loadGenre]);
+
   const {
     movies: { genres: movieGenres },
     tv: { genres: tvGenres },
@@ -16,13 +25,16 @@ const ContentByGenres = () => {
 
   const tvGenresId = tvGenres.map(({ id }) => id);
   const commonGenres = movieGenres.filter(({ id }) => tvGenresId.includes(id));
-  console.log(commonGenres);
 
   return (
     <>
-      {commonGenres.map((genre) => (
-        <GenreSection genre={genre} key={genre.id} />
-      ))}
+      {status.state === 'LOADING' ? (
+        <MediaScroller list={[]} loading />
+      ) : (
+        commonGenres.map((genre) => (
+          <GenreSection genre={genre} key={genre.id} />
+        ))
+      )}
     </>
   );
 };
@@ -52,7 +64,7 @@ const GenreSection = ({ genre }: { genre: Genre }) => {
     currentGenre?.data.map(({ id, title, poster_path, release_date }) => ({
       id,
       title,
-      image: poster_path && getImageURL(poster_path, 'poster', 'w185'),
+      image: poster_path && getImageURL(poster_path, 'poster', 'original'),
       caption: new Date(release_date).toLocaleDateString('en-us', {
         year: 'numeric',
         month: 'short',
@@ -82,7 +94,7 @@ const GenreSection = ({ genre }: { genre: Genre }) => {
 
       <MediaScroller
         list={mediaScrollerList}
-        size="10em:15em"
+        ratio="2/3"
         loading={genreContent.state === 'LOADING'}
       />
     </section>

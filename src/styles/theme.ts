@@ -55,6 +55,7 @@ export const getTheme = (isDarkMode = false) => {
       xxxl: sizeStepUp(5),
     },
     mediaQueries: {
+      below1400: 'only screen and (max-width: 1400px)',
       below768: 'only screen and (max-width: 768px)',
       below375: 'only screen and (max-width: 375px)',
     },
@@ -69,7 +70,9 @@ declare module 'styled-components' {
 
 export const GlobalStyles = createGlobalStyle`
   html {
-    font-size: 16px;
+    /* grow as per screen width */
+    font-size: calc(1px + 1vw);
+    line-height: calc(1.1em + 0.5vw);
     block-size: 100%;
     background-color: ${({ theme }) => theme.colors.surface1};
     color: ${({ theme }) => theme.colors.text1};
@@ -78,12 +81,20 @@ export const GlobalStyles = createGlobalStyle`
     -moz-osx-font-smoothing: grayscale;
 
     @media ${({ theme }) => theme.mediaQueries.below768} {
+      font-size: 16px;
+    }
+
+    @media ${({ theme }) => theme.mediaQueries.below768} {
       font-size: 14px;
     }
 
     @media ${({ theme }) => theme.mediaQueries.below375} {
       font-size: 12px;
     }
+  }
+
+  body {
+    background-color: ${({ theme }) => theme.colors.surface1};
   }
 
   * {

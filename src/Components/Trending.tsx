@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
 import { appContext } from '../AppContext';
 import Button from '../Elements/Button';
 import MediaScroller from '../Elements/MediaScroller';
@@ -8,14 +7,6 @@ import useAsync from '../hooks/useAsync';
 import { fetchTrendingMovies, fetchTrendingTV } from '../services/api';
 import { MediaType } from '../types/common';
 import { getImageURL } from '../utils/utils';
-
-const Section = styled.section`
-  background-image: linear-gradient(
-    to bottom,
-    ${(props) => props.theme.colors.surface2},
-    ${(props) => props.theme.colors.surface3}
-  );
-`;
 
 const Trending = () => {
   const [selectedMedia, setSelectedMedia] = useState<MediaType>(
@@ -42,7 +33,7 @@ const Trending = () => {
     ({ id, title, poster_path, release_date }) => ({
       id,
       title,
-      image: poster_path && getImageURL(poster_path, 'poster', 'w185'),
+      image: poster_path && getImageURL(poster_path, 'poster', 'original'),
       caption: new Date(release_date).toLocaleDateString('en-us', {
         year: 'numeric',
         month: 'short',
@@ -52,7 +43,7 @@ const Trending = () => {
   );
 
   return (
-    <Section>
+    <section id="trending">
       <Header>
         <h1>Trending</h1>
         <ButtonContainer>
@@ -73,10 +64,10 @@ const Trending = () => {
 
       <MediaScroller
         list={mediaScrollerList}
-        size="10em:15em"
+        ratio="2/3"
         loading={trendingStatus.state === 'LOADING'}
       />
-    </Section>
+    </section>
   );
 };
 

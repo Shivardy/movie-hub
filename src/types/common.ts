@@ -50,13 +50,22 @@ export type ActionObjects =
         | 'UPDATE_POPULAR_MOVIES';
       payload: Media[];
     }
-  | ContentByGenre;
+  | ContentByGenre
+  | UpdateGenres;
 
-export type ContentByGenre = {
+type ContentByGenre = {
   type: 'UPDATE_MOVIES_BY_GENRE' | 'UPDATE_TV_BY_GENRE';
   payload: {
     data: Media[];
     genreId: number;
+  };
+};
+
+type UpdateGenres = {
+  type: 'UPDATE_GENRES';
+  payload: {
+    tvGenres: Genre[];
+    movieGenres: Genre[];
   };
 };
 

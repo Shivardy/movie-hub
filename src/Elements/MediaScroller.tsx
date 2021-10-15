@@ -16,6 +16,13 @@ const MediaScrollerUL = styled.ul`
   scroll-padding-right: ${(props) => props.theme.size.xl};
   scroll-padding-inline: ${(props) => props.theme.size.xl};
 
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+
   @media (prefers-reduced-motion: no-preference) {
     & {
       scroll-behavior: smooth;
@@ -24,13 +31,12 @@ const MediaScrollerUL = styled.ul`
 `;
 
 type MediaItemProps = {
-  width: string;
-  height: string;
+  inlineSize: string;
 };
 
 const MediaItem = styled.li<MediaItemProps>`
   display: inline-block;
-  inline-size: ${(props) => props.width};
+  inline-size: ${(props) => props.inlineSize};
   block-size: min-content;
 
   &:last-of-type figure {
@@ -66,9 +72,17 @@ const Figure = styled.figure`
   }
 `;
 
-const Image = styled.img<MediaItemProps>`
-  inline-size: ${(props) => props.width};
-  block-size: ${(props) => props.height};
+type ImageProps = {
+  aspectRatio: Exclude<MediaScrollerProps['ratio'], typeof undefined>;
+  inlineSize: string;
+  blockSize: string;
+};
+const Image = styled.img<ImageProps>`
+  inline-size: ${(props) => props.inlineSize};
+  block-size: ${(props) => props.blockSize};
+
+  aspect-ratio: ${(props) => props.aspectRatio};
+
   object-fit: cover;
 
   border-radius: 1ex;
@@ -98,30 +112,38 @@ type MediaScrollerProps = {
     title: string;
     caption?: string;
   }[];
-  size?: `${number}em:${number}em`;
+  ratio?: '2/3' | '1/1' | '16/9';
   loading?: boolean;
 };
 
 const MediaScroller = ({
   list,
-  size = '10em:10em',
+  ratio = '1/1',
   loading = false,
 }: MediaScrollerProps) => {
-  const [width, height] = size.split(':');
+  const [widthRatio, heightRatio] = ratio.split('/').map((i) => +i);
+  const size = '10em';
+  const height =
+    widthRatio > heightRatio ? size : `${(10 * heightRatio) / widthRatio}em`;
+
+  const width =
+    widthRatio > heightRatio ? `${(10 * widthRatio) / heightRatio}em` : size;
+
   const data = loading ? Array(10).fill({}) : list;
   return (
     <MediaScrollerUL>
       {data.map((item, index) => (
-        <MediaItem key={item.id || index} width={width} height={height}>
+        <MediaItem key={item.id || index} inlineSize={width}>
           <Figure>
             <picture>
               {item.image ? (
                 <Image
+                  aspectRatio={ratio}
+                  inlineSize={width}
+                  blockSize={height}
                   alt={item.title}
                   loading="lazy"
                   src={item.image}
-                  width={width}
-                  height={height}
                 />
               ) : (
                 <Skeleton width={width} height={height} />
