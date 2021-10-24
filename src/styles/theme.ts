@@ -80,7 +80,7 @@ export const GlobalStyles = createGlobalStyle`
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 
-    @media ${({ theme }) => theme.mediaQueries.below768} {
+    @media ${({ theme }) => theme.mediaQueries.below1400} {
       font-size: 16px;
     }
 
