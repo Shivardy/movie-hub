@@ -1,5 +1,42 @@
+import { useRef, useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import styled from 'styled-components';
+import { debounce } from '../utils/utils';
+
+const Div = styled.div`
+  position: relative;
+`;
+
+const Arrow = styled.span<{ bsize: string; isHidden: boolean }>`
+  color: white;
+  background: rgba(20, 20, 20, 0.5);
+
+  cursor: pointer;
+  font-size: 6em;
+
+  position: absolute;
+  top: ${(props) => props.theme.size.xs};
+  height: ${(props) => props.bsize};
+  width: 4%;
+
+  text-align: center;
+  display: none;
+  justify-content: center;
+  align-items: center;
+
+  visibility: ${(props) => (props.isHidden ? 'hidden' : 'visible')};
+
+  &:nth-of-type(1) {
+    left: 0;
+  }
+
+  &:nth-of-type(2) {
+    right: 0;
+  }
+  ${Div}:hover & {
+    display: inline-flex;
+  }
+`;
 
 const MediaScrollerUL = styled.ul`
   display: grid;
@@ -38,21 +75,6 @@ const MediaItem = styled.li<MediaItemProps>`
   display: inline-block;
   inline-size: ${(props) => props.inlineSize};
   block-size: min-content;
-
-  &:last-of-type figure {
-    position: relative;
-
-    &::after {
-      content: '';
-      position: absolute;
-
-      inline-size: ${(props) => props.theme.size.lg};
-      block-size: 100%;
-
-      inset-block-start: 0;
-      inset-inline-end: calc(${(props) => props.theme.size.lg} * -1);
-    }
-  }
 `;
 
 const Figure = styled.figure`
@@ -105,15 +127,27 @@ const Figcaption = styled.figcaption`
   }
 `;
 
+type ListItemType = {
+  id: number;
+  image: string;
+  title: string;
+  caption?: string;
+};
+
 type MediaScrollerProps = {
-  list: {
-    id: number;
-    image: string;
-    title: string;
-    caption?: string;
-  }[];
+  list: ListItemType[];
   ratio?: '2/3' | '1/1' | '16/9';
   loading?: boolean;
+};
+
+const getHeightAndWidth = (ratio: MediaScrollerProps['ratio'] = '1/1') => {
+  const [widthRatio, heightRatio] = ratio.split('/').map((i) => +i);
+  const size = '10rem';
+  const height =
+    widthRatio > heightRatio ? size : `${(10 * heightRatio) / widthRatio}rem`;
+  const width =
+    widthRatio > heightRatio ? `${(10 * widthRatio) / heightRatio}rem` : size;
+  return [height, width];
 };
 
 const MediaScroller = ({
@@ -121,48 +155,111 @@ const MediaScroller = ({
   ratio = '1/1',
   loading = false,
 }: MediaScrollerProps) => {
-  const [widthRatio, heightRatio] = ratio.split('/').map((i) => +i);
-  const size = '10em';
-  const height =
-    widthRatio > heightRatio ? size : `${(10 * heightRatio) / widthRatio}em`;
+  const [height, width] = getHeightAndWidth(ratio);
+  const mediaList = useRef<HTMLUListElement>(document.createElement('ul'));
+  const [isHiddenLeftArrow, setIsHiddenLeftArrow] = useState(true);
+  const [isHiddenRightArrow, setIsHiddenRightArrow] = useState(false);
 
-  const width =
-    widthRatio > heightRatio ? `${(10 * widthRatio) / heightRatio}em` : size;
+  const scrollToRight = () => {
+    const { offsetWidth, scrollLeft } = mediaList.current;
+    mediaList.current.scrollTo({
+      top: 0,
+      left: scrollLeft + offsetWidth,
+      behavior: 'smooth',
+    });
+  };
 
-  const data = loading ? Array(10).fill({}) : list;
+  const scrollToLeft = () => {
+    const { offsetWidth, scrollLeft } = mediaList.current;
+    mediaList.current.scrollTo({
+      top: 0,
+      left: scrollLeft - offsetWidth,
+      behavior: 'smooth',
+    });
+  };
+
+  const handleScroll = () => {
+    const { offsetWidth, scrollLeft, scrollWidth } = mediaList.current;
+
+    if (offsetWidth + scrollLeft >= scrollWidth) {
+      setIsHiddenRightArrow(true);
+    } else if (isHiddenRightArrow) {
+      setIsHiddenRightArrow(false);
+    }
+
+    if (scrollLeft === 0) {
+      setIsHiddenLeftArrow(true);
+    } else if (isHiddenLeftArrow) {
+      setIsHiddenLeftArrow(false);
+    }
+  };
+
+  const data = loading ? (Array(10).fill({}) as ListItemType[]) : list;
+
   return (
-    <MediaScrollerUL>
-      {data.map((item, index) => (
-        <MediaItem key={item.id || index} inlineSize={width}>
-          <Figure>
-            <picture>
-              {item.image ? (
-                <Image
-                  aspectRatio={ratio}
-                  inlineSize={width}
-                  blockSize={height}
-                  alt={item.title}
-                  loading="lazy"
-                  src={item.image}
-                />
-              ) : (
-                <Skeleton width={width} height={height} />
-              )}
-            </picture>
-            <Figcaption>
-              {item.title || (
-                <>
-                  <Skeleton />
-                  <Skeleton width="65%" />
-                </>
-              )}
-              {item.caption && <p>{item.caption}</p>}
-            </Figcaption>
-          </Figure>
-        </MediaItem>
-      ))}
-    </MediaScrollerUL>
+    <Div>
+      <Arrow bsize={height} onClick={scrollToLeft} isHidden={isHiddenLeftArrow}>
+        ‹
+      </Arrow>
+      <Arrow
+        bsize={height}
+        onClick={scrollToRight}
+        isHidden={isHiddenRightArrow}
+      >
+        ›
+      </Arrow>
+      <MediaScrollerUL ref={mediaList} onScroll={debounce(handleScroll)}>
+        {data.map((item, index) => (
+          <ListItem
+            item={item}
+            index={index}
+            width={width}
+            height={height}
+            ratio={ratio}
+          />
+        ))}
+      </MediaScrollerUL>
+    </Div>
   );
 };
 
 export default MediaScroller;
+
+type ListItemProps = {
+  item: ListItemType;
+  index: number;
+  width: string;
+  height: string;
+  ratio: Exclude<MediaScrollerProps['ratio'], undefined>;
+};
+const ListItem = ({ height, item, index, width, ratio }: ListItemProps) => {
+  return (
+    <MediaItem key={item.id || index} inlineSize={width}>
+      <Figure>
+        <picture style={{ height }}>
+          {item.image ? (
+            <Image
+              aspectRatio={ratio}
+              inlineSize={width}
+              blockSize={height}
+              alt={item.title}
+              loading="lazy"
+              src={item.image}
+            />
+          ) : (
+            <Skeleton width={width} height={height} />
+          )}
+        </picture>
+        <Figcaption>
+          {item.title || (
+            <>
+              <Skeleton />
+              <Skeleton width="65%" />
+            </>
+          )}
+          {item.caption && <p>{item.caption}</p>}
+        </Figcaption>
+      </Figure>
+    </MediaItem>
+  );
+};

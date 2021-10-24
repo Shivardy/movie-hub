@@ -13,7 +13,7 @@ export function getImageURL<T extends ImageType>(
   type: T,
   size: Size<T>
 ) {
-  return `${imageBaseURL}${size}${path}`;
+  return path ? `${imageBaseURL}${size}${path}` : '';
 }
 
 export const getMoviesFromApiResult = (results: MovieResult[]): Media[] => {
@@ -57,3 +57,16 @@ export const getTVsFromApiResult = (results: TVResult[]): Media[] => {
   );
   return tvs;
 };
+
+export function debounce<T extends Function>(fn: T, time = 50) {
+  let timeout: NodeJS.Timeout;
+  return function (...args: any[]) {
+    if (timeout) {
+      clearTimeout(timeout);
+    }
+    timeout = setTimeout(() => {
+      fn(...args);
+      clearTimeout(timeout);
+    }, time);
+  };
+}

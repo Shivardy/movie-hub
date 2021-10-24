@@ -45,8 +45,7 @@ const DiscoverMovies = () => {
     ({ id, title, backdrop_path, release_date }) => ({
       id,
       title,
-      image:
-        backdrop_path && getImageURL(backdrop_path, 'backdrop', 'original'),
+      image: backdrop_path && getImageURL(backdrop_path, 'backdrop', 'w300'),
       caption: new Date(release_date).toLocaleDateString('en-us', {
         year: 'numeric',
         month: 'short',

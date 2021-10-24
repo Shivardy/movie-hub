@@ -33,7 +33,7 @@ const Trending = () => {
     ({ id, title, poster_path, release_date }) => ({
       id,
       title,
-      image: poster_path && getImageURL(poster_path, 'poster', 'original'),
+      image: poster_path && getImageURL(poster_path, 'poster', 'w342'),
       caption: new Date(release_date).toLocaleDateString('en-us', {
         year: 'numeric',
         month: 'short',

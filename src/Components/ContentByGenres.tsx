@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
 import { appContext } from '../AppContext';
 import Button from '../Elements/Button';
 import MediaScroller from '../Elements/MediaScroller';
@@ -31,15 +32,27 @@ const ContentByGenres = () => {
       {status.state === 'LOADING' ? (
         <MediaScroller list={[]} loading />
       ) : (
-        commonGenres.map((genre) => (
-          <GenreSection genre={genre} key={genre.id} />
+        commonGenres.map((genre, index) => (
+          <GenreSection genre={genre} key={genre.id} index={index} />
         ))
       )}
     </>
   );
 };
 
-const GenreSection = ({ genre }: { genre: Genre }) => {
+const Section = styled.section<{ isBackdrop: boolean }>`
+  background-image: ${(props) =>
+    props.isBackdrop
+      ? `linear-gradient(
+      to bottom,
+      ${props.theme.colors.surface2},
+      ${props.theme.colors.surface3}
+    )`
+      : 'none'};
+`;
+type GenreSectionProps = { genre: Genre; index: number };
+const GenreSection = ({ genre, index }: GenreSectionProps) => {
+  const isBackdrop = index % 2 === 1;
   const [selectedMedia, setSelectedMedia] = useState<MediaType>(
     MediaType.Movie
   );
@@ -61,19 +74,27 @@ const GenreSection = ({ genre }: { genre: Genre }) => {
   const currentGenre = genres.find(({ id }) => genre.id === id);
 
   const mediaScrollerList =
-    currentGenre?.data.map(({ id, title, poster_path, release_date }) => ({
-      id,
-      title,
-      image: poster_path && getImageURL(poster_path, 'poster', 'original'),
-      caption: new Date(release_date).toLocaleDateString('en-us', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-      }),
-    })) || [];
+    currentGenre?.data.map(
+      ({ id, title, poster_path, backdrop_path, release_date }) => ({
+        id,
+        title,
+        image:
+          poster_path &&
+          getImageURL(
+            isBackdrop ? backdrop_path : poster_path,
+            isBackdrop ? 'backdrop' : 'poster',
+            isBackdrop ? 'w300' : 'w342'
+          ),
+        caption: new Date(release_date).toLocaleDateString('en-us', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+        }),
+      })
+    ) || [];
 
   return (
-    <section>
+    <Section isBackdrop={isBackdrop}>
       <Header>
         <h1>{genre.name}</h1>
         <ButtonContainer>
@@ -94,10 +115,10 @@ const GenreSection = ({ genre }: { genre: Genre }) => {
 
       <MediaScroller
         list={mediaScrollerList}
-        ratio="2/3"
+        ratio={isBackdrop ? '16/9' : '2/3'}
         loading={genreContent.state === 'LOADING'}
       />
-    </section>
+    </Section>
   );
 };
 
