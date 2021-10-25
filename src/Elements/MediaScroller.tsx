@@ -110,8 +110,8 @@ const Image = styled.img<ImageProps>`
   border-radius: 1ex;
   border: none;
   overflow: hidden;
-
-  background-image: linear-gradient(to bottom, hsl(0 0% 40%), hsl(0 0% 20%));
+  background-image: ${(props) =>
+    `linear-gradient(to bottom, ${props.theme.colors.surface1}, ${props.theme.colors.surface2})`};
 `;
 
 const Figcaption = styled.figcaption`
@@ -211,8 +211,8 @@ const MediaScroller = ({
       <MediaScrollerUL ref={mediaList} onScroll={debounce(handleScroll)}>
         {data.map((item, index) => (
           <ListItem
+            key={item.id || index}
             item={item}
-            index={index}
             width={width}
             height={height}
             ratio={ratio}
@@ -227,16 +227,15 @@ export default MediaScroller;
 
 type ListItemProps = {
   item: ListItemType;
-  index: number;
   width: string;
   height: string;
   ratio: Exclude<MediaScrollerProps['ratio'], undefined>;
 };
-const ListItem = ({ height, item, index, width, ratio }: ListItemProps) => {
+const ListItem = ({ height, item, width, ratio }: ListItemProps) => {
   return (
-    <MediaItem key={item.id || index} inlineSize={width}>
+    <MediaItem inlineSize={width}>
       <Figure>
-        <picture style={{ height }}>
+        <picture>
           {item.image ? (
             <Image
               aspectRatio={ratio}

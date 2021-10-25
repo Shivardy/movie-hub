@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useInView } from 'react-intersection-observer';
 import styled from 'styled-components';
 import { appContext } from '../AppContext';
 import Button from '../Elements/Button';
@@ -30,10 +31,10 @@ const ContentByGenres = () => {
   return (
     <>
       {status.state === 'LOADING' ? (
-        <MediaScroller list={[]} loading />
+        <MediaScroller list={[]} loading ratio={'2/3'} />
       ) : (
         commonGenres.map((genre, index) => (
-          <GenreSection genre={genre} key={genre.id} index={index} />
+          <GenreSectionWrapper genre={genre} key={genre.id} index={index} />
         ))
       )}
     </>
@@ -50,13 +51,56 @@ const Section = styled.section<{ isBackdrop: boolean }>`
     )`
       : 'none'};
 `;
-type GenreSectionProps = { genre: Genre; index: number };
-const GenreSection = ({ genre, index }: GenreSectionProps) => {
-  const isBackdrop = index % 2 === 1;
+type GenreSectionWrapperProps = { genre: Genre; index: number };
+
+const GenreSectionWrapper = ({ genre, index }: GenreSectionWrapperProps) => {
+  const { ref, inView } = useInView({ triggerOnce: true });
   const [selectedMedia, setSelectedMedia] = useState<MediaType>(
     MediaType.Movie
   );
 
+  const isBackdrop = index % 2 === 1;
+  return (
+    <Section ref={ref} isBackdrop={isBackdrop}>
+      <Header>
+        <h1>{genre.name}</h1>
+        <ButtonContainer>
+          <Button
+            primary={selectedMedia === MediaType.Movie}
+            onClick={() => setSelectedMedia(MediaType.Movie)}
+          >
+            {MediaType.Movie}
+          </Button>
+          <Button
+            primary={selectedMedia === MediaType.Tv}
+            onClick={() => setSelectedMedia(MediaType.Tv)}
+          >
+            {MediaType.Tv}
+          </Button>
+        </ButtonContainer>
+      </Header>
+      {inView ? (
+        <GenreSection
+          genreId={genre.id}
+          selectedMedia={selectedMedia}
+          isBackdrop={isBackdrop}
+        />
+      ) : (
+        <MediaScroller list={[]} loading ratio={isBackdrop ? '16/9' : '2/3'} />
+      )}
+    </Section>
+  );
+};
+type GenreSectionProps = {
+  genreId: number;
+  selectedMedia: MediaType;
+  isBackdrop: boolean;
+};
+const GenreSection = ({
+  genreId,
+  selectedMedia,
+  isBackdrop,
+}: GenreSectionProps) => {
   const [genreContent, loadGenreContent] = useAsync(
     selectedMedia === MediaType.Movie ? fetchMoviesByGenre : fetchTvByGenre,
     selectedMedia === MediaType.Movie
@@ -65,13 +109,13 @@ const GenreSection = ({ genre, index }: GenreSectionProps) => {
   );
 
   useEffect(() => {
-    loadGenreContent(genre.id);
-  }, [genre.id, loadGenreContent]);
+    loadGenreContent(genreId);
+  }, [genreId, loadGenreContent]);
 
   const { movies, tv } = appContext();
 
   const genres = selectedMedia === MediaType.Movie ? movies.genres : tv.genres;
-  const currentGenre = genres.find(({ id }) => genre.id === id);
+  const currentGenre = genres.find(({ id }) => genreId === id);
 
   const mediaScrollerList =
     currentGenre?.data.map(
@@ -94,31 +138,11 @@ const GenreSection = ({ genre, index }: GenreSectionProps) => {
     ) || [];
 
   return (
-    <Section isBackdrop={isBackdrop}>
-      <Header>
-        <h1>{genre.name}</h1>
-        <ButtonContainer>
-          <Button
-            primary={selectedMedia === MediaType.Movie}
-            onClick={() => setSelectedMedia(MediaType.Movie)}
-          >
-            {MediaType.Movie}
-          </Button>
-          <Button
-            primary={selectedMedia === MediaType.Tv}
-            onClick={() => setSelectedMedia(MediaType.Tv)}
-          >
-            {MediaType.Tv}
-          </Button>
-        </ButtonContainer>
-      </Header>
-
-      <MediaScroller
-        list={mediaScrollerList}
-        ratio={isBackdrop ? '16/9' : '2/3'}
-        loading={genreContent.state === 'LOADING'}
-      />
-    </Section>
+    <MediaScroller
+      list={mediaScrollerList}
+      ratio={isBackdrop ? '16/9' : '2/3'}
+      loading={genreContent.state === 'LOADING'}
+    />
   );
 };
 
