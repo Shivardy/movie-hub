@@ -12,7 +12,7 @@ import {
   fetchTvByGenre,
 } from '../services/api';
 import { Genre, MediaType } from '../types/common';
-import { getImageURL } from '../utils/utils';
+import { getImageSrc } from '../utils/utils';
 
 const ContentByGenres = () => {
   const [status, loadGenre] = useAsync(fetchGenres, 'UPDATE_GENRES');
@@ -122,13 +122,10 @@ const GenreSection = ({
       ({ id, title, poster_path, backdrop_path, release_date }) => ({
         id,
         title,
-        image:
-          poster_path &&
-          getImageURL(
-            isBackdrop ? backdrop_path : poster_path,
-            isBackdrop ? 'backdrop' : 'poster',
-            isBackdrop ? 'w300' : 'w342'
-          ),
+        image: getImageSrc(
+          isBackdrop ? backdrop_path : poster_path,
+          isBackdrop ? 'backdrop' : 'poster'
+        ),
         caption: new Date(release_date).toLocaleDateString('en-us', {
           year: 'numeric',
           month: 'short',

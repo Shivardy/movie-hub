@@ -6,7 +6,7 @@ import { ButtonContainer, Header } from '../Elements/StyledElements';
 import useAsync from '../hooks/useAsync';
 import { fetchTrendingMovies, fetchTrendingTV } from '../services/api';
 import { MediaType } from '../types/common';
-import { getImageURL } from '../utils/utils';
+import { getImageSrc } from '../utils/utils';
 
 const Trending = () => {
   const [selectedMedia, setSelectedMedia] = useState<MediaType>(
@@ -33,7 +33,7 @@ const Trending = () => {
     ({ id, title, poster_path, release_date }) => ({
       id,
       title,
-      image: poster_path && getImageURL(poster_path, 'poster', 'w342'),
+      image: getImageSrc(poster_path, 'poster'),
       caption: new Date(release_date).toLocaleDateString('en-us', {
         year: 'numeric',
         month: 'short',
@@ -41,7 +41,7 @@ const Trending = () => {
       }),
     })
   );
-
+  console.log(mediaScrollerList);
   return (
     <section id="trending">
       <Header>

@@ -129,7 +129,10 @@ const Figcaption = styled.figcaption`
 
 type ListItemType = {
   id: number;
-  image: string;
+  image: {
+    src: string;
+    srcset: string;
+  };
   title: string;
   caption?: string;
 };
@@ -194,7 +197,9 @@ const MediaScroller = ({
     }
   };
 
-  const data = loading ? (Array(10).fill({}) as ListItemType[]) : list;
+  const data = loading
+    ? (Array(10).fill({ image: {} }) as ListItemType[])
+    : list;
 
   return (
     <Div>
@@ -231,19 +236,21 @@ type ListItemProps = {
   height: string;
   ratio: Exclude<MediaScrollerProps['ratio'], undefined>;
 };
+
 const ListItem = ({ height, item, width, ratio }: ListItemProps) => {
   return (
     <MediaItem inlineSize={width}>
       <Figure>
         <picture>
-          {item.image ? (
+          {item.image.src ? (
             <Image
               aspectRatio={ratio}
               inlineSize={width}
               blockSize={height}
               alt={item.title}
               loading="lazy"
-              src={item.image}
+              srcSet={item.image.srcset}
+              src={item.image.src}
             />
           ) : (
             <Skeleton width={width} height={height} />

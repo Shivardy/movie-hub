@@ -1,6 +1,7 @@
-import { ImageType, Media, Size } from '../types/common';
+import { ImageType, Media } from '../types/common';
 import { MovieResult } from '../types/Movies';
 import { TVResult } from '../types/Tv';
+import { ImageSize } from './constants';
 import environment from './environment';
 
 const { apiKey, baseURL, imageBaseURL } = environment;
@@ -8,12 +9,17 @@ const { apiKey, baseURL, imageBaseURL } = environment;
 export const getUrl = (path: string, queryString = ''): string =>
   `${baseURL}${path}?api_key=${apiKey}${queryString}`;
 
-export function getImageURL<T extends ImageType>(
-  path: string,
-  type: T,
-  size: Size<T>
-) {
-  return path ? `${imageBaseURL}${size}${path}` : '';
+export function getImageSrc(path: string, type: ImageType) {
+  const img = { src: '', srcset: '' };
+  if (path) {
+    img.src = `${imageBaseURL}original${path}`;
+    const sizes = ImageSize[type].filter((size) => size !== 'original');
+    const paths = sizes.map(
+      (size) => `${imageBaseURL}${size}${path} ${size.substring(1)}w`
+    );
+    img.srcset = paths.join(', ');
+  }
+  return img;
 }
 
 export const getMoviesFromApiResult = (results: MovieResult[]): Media[] => {

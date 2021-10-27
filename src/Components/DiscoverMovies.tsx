@@ -6,7 +6,7 @@ import MediaScroller from '../Elements/MediaScroller';
 import { ButtonContainer, Header } from '../Elements/StyledElements';
 import useAsync from '../hooks/useAsync';
 import { fetchPopularMovies, fetchUpcomingMovies } from '../services/api';
-import { getImageURL } from '../utils/utils';
+import { getImageSrc } from '../utils/utils';
 
 enum MovieType {
   Popular = 'popular',
@@ -45,7 +45,7 @@ const DiscoverMovies = () => {
     ({ id, title, backdrop_path, release_date }) => ({
       id,
       title,
-      image: backdrop_path && getImageURL(backdrop_path, 'backdrop', 'w300'),
+      image: getImageSrc(backdrop_path, 'backdrop'),
       caption: new Date(release_date).toLocaleDateString('en-us', {
         year: 'numeric',
         month: 'short',
