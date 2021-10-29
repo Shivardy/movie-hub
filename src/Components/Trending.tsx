@@ -1,30 +1,29 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import useSWR from 'swr';
 import { appContext } from '../AppContext';
 import Button from '../Elements/Button';
 import MediaScroller from '../Elements/MediaScroller';
 import { ButtonContainer, Header } from '../Elements/StyledElements';
-import useAsync from '../hooks/useAsync';
-import { fetchTrendingMovies, fetchTrendingTV } from '../services/api';
 import { MediaType } from '../types/common';
-import { getImageSrc } from '../utils/utils';
+import { getImageSrc, getUrl } from '../utils/utils';
 
 const Trending = () => {
   const [selectedMedia, setSelectedMedia] = useState<MediaType>(
     MediaType.Movie
   );
 
-  const [trendingStatus, loadTrending] = useAsync(
-    selectedMedia === MediaType.Movie ? fetchTrendingMovies : fetchTrendingTV,
-    selectedMedia === MediaType.Movie
-      ? 'UPDATE_TRENDING_MOVIES_BY_DAY'
-      : 'UPDATE_TRENDING_TV_BY_DAY'
-  );
-
-  const { movies, tv } = appContext();
-
-  useEffect(() => {
-    loadTrending();
-  }, [loadTrending]);
+  const { dispatch, movies, tv } = appContext();
+  const result = useSWR(getUrl(`trending/${selectedMedia}/day`), {
+    onSuccess: (data) => {
+      dispatch({
+        type:
+          selectedMedia === MediaType.Movie
+            ? 'UPDATE_TRENDING_MOVIES_BY_DAY'
+            : 'UPDATE_TRENDING_TV_BY_DAY',
+        payload: data as any,
+      });
+    },
+  });
 
   const data =
     selectedMedia === MediaType.Movie ? movies.trending : tv.trending;
@@ -41,7 +40,12 @@ const Trending = () => {
       }),
     })
   );
-  console.log(mediaScrollerList);
+
+  const handleButton = () =>
+    setSelectedMedia(
+      selectedMedia === MediaType.Movie ? MediaType.Tv : MediaType.Movie
+    );
+
   return (
     <section id="trending">
       <Header>
@@ -49,13 +53,15 @@ const Trending = () => {
         <ButtonContainer>
           <Button
             primary={selectedMedia === MediaType.Movie}
-            onClick={() => setSelectedMedia(MediaType.Movie)}
+            disabled={selectedMedia === MediaType.Movie}
+            onClick={handleButton}
           >
             {MediaType.Movie}
           </Button>
           <Button
             primary={selectedMedia === MediaType.Tv}
-            onClick={() => setSelectedMedia(MediaType.Tv)}
+            disabled={selectedMedia === MediaType.Tv}
+            onClick={handleButton}
           >
             {MediaType.Tv}
           </Button>
@@ -65,7 +71,7 @@ const Trending = () => {
       <MediaScroller
         list={mediaScrollerList}
         ratio="2/3"
-        loading={trendingStatus.state === 'LOADING'}
+        loading={result.isValidating || result.error}
       />
     </section>
   );

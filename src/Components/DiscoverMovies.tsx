@@ -1,12 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
+import useSWR from 'swr';
 import { appContext } from '../AppContext';
 import Button from '../Elements/Button';
 import MediaScroller from '../Elements/MediaScroller';
 import { ButtonContainer, Header } from '../Elements/StyledElements';
-import useAsync from '../hooks/useAsync';
-import { fetchPopularMovies, fetchUpcomingMovies } from '../services/api';
-import { getImageSrc } from '../utils/utils';
+import { getImageSrc, getUrl } from '../utils/utils';
 
 enum MovieType {
   Popular = 'popular',
@@ -24,20 +23,22 @@ const Section = styled.section`
 const DiscoverMovies = () => {
   const [movieType, setMovieType] = useState<MovieType>(MovieType.Popular);
 
-  const [movies, loadMovies] = useAsync(
-    movieType === MovieType.Popular ? fetchPopularMovies : fetchUpcomingMovies,
-    movieType === MovieType.Popular
-      ? 'UPDATE_POPULAR_MOVIES'
-      : 'UPDATE_UPCOMING_MOVIES'
-  );
-
-  useEffect(() => {
-    loadMovies();
-  }, [loadMovies]);
-
   const {
+    dispatch,
     movies: { popular, upcoming },
   } = appContext();
+
+  const result = useSWR(getUrl(`movie/${movieType}`), {
+    onSuccess: (data) => {
+      dispatch({
+        type:
+          movieType === MovieType.Popular
+            ? 'UPDATE_POPULAR_MOVIES'
+            : 'UPDATE_UPCOMING_MOVIES',
+        payload: data,
+      });
+    },
+  });
 
   const data = movieType === MovieType.Popular ? popular : upcoming;
 
@@ -54,6 +55,10 @@ const DiscoverMovies = () => {
     })
   );
 
+  const handleButton = () =>
+    setMovieType(
+      movieType === MovieType.Popular ? MovieType.Upcoming : MovieType.Popular
+    );
   return (
     <Section id="discover-movies">
       <Header>
@@ -61,13 +66,15 @@ const DiscoverMovies = () => {
         <ButtonContainer>
           <Button
             primary={movieType === MovieType.Popular}
-            onClick={() => setMovieType(MovieType.Popular)}
+            disabled={movieType === MovieType.Popular}
+            onClick={handleButton}
           >
             Popular
           </Button>
           <Button
             primary={movieType === MovieType.Upcoming}
-            onClick={() => setMovieType(MovieType.Upcoming)}
+            disabled={movieType === MovieType.Upcoming}
+            onClick={handleButton}
           >
             Upcoming
           </Button>
@@ -76,7 +83,7 @@ const DiscoverMovies = () => {
 
       <MediaScroller
         list={mediaScrollerList}
-        loading={movies.state === 'LOADING'}
+        loading={result.isValidating || result.error}
         ratio="16/9"
       />
     </Section>

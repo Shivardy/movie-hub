@@ -1,36 +1,37 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import styled from 'styled-components';
+import useSWR from 'swr';
 import { appContext } from '../AppContext';
 import Button from '../Elements/Button';
 import MediaScroller from '../Elements/MediaScroller';
 import { ButtonContainer, Header } from '../Elements/StyledElements';
-import useAsync from '../hooks/useAsync';
-import {
-  fetchGenres,
-  fetchMoviesByGenre,
-  fetchTvByGenre,
-} from '../services/api';
+import { multiFetcher } from '../services/api';
 import { Genre, MediaType } from '../types/common';
-import { getImageSrc } from '../utils/utils';
+import { getImageSrc, getUrl } from '../utils/utils';
 
 const ContentByGenres = () => {
-  const [status, loadGenre] = useAsync(fetchGenres, 'UPDATE_GENRES');
-  useEffect(() => {
-    loadGenre();
-  }, [loadGenre]);
+  const { movies, tv, dispatch } = appContext();
 
-  const {
-    movies: { genres: movieGenres },
-    tv: { genres: tvGenres },
-  } = appContext();
+  const result = useSWR(
+    [getUrl('genre/tv/list'), getUrl('genre/movie/list')],
+    multiFetcher,
+    {
+      onSuccess: (data) => {
+        const [{ genres: tvGenres }, { genres: movieGenres }] = data;
+        dispatch({ type: 'UPDATE_GENRES', payload: { tvGenres, movieGenres } });
+      },
+    }
+  );
 
-  const tvGenresId = tvGenres.map(({ id }) => id);
-  const commonGenres = movieGenres.filter(({ id }) => tvGenresId.includes(id));
+  const tvGenresId = tv.genres.length ? tv.genres.map(({ id }) => id) : [];
+  const commonGenres = movies.genres.length
+    ? movies.genres.filter(({ id }) => tvGenresId.includes(id))
+    : [];
 
   return (
     <>
-      {status.state === 'LOADING' ? (
+      {result.isValidating ? (
         <MediaScroller list={[]} loading ratio={'2/3'} />
       ) : (
         commonGenres.map((genre, index) => (
@@ -101,18 +102,22 @@ const GenreSection = ({
   selectedMedia,
   isBackdrop,
 }: GenreSectionProps) => {
-  const [genreContent, loadGenreContent] = useAsync(
-    selectedMedia === MediaType.Movie ? fetchMoviesByGenre : fetchTvByGenre,
-    selectedMedia === MediaType.Movie
-      ? 'UPDATE_MOVIES_BY_GENRE'
-      : 'UPDATE_TV_BY_GENRE'
+  const { dispatch, movies, tv } = appContext();
+
+  const result = useSWR(
+    getUrl(`discover/${selectedMedia}`, `&with_genres=${genreId}`),
+    {
+      onSuccess: (data) => {
+        dispatch({
+          type:
+            selectedMedia === MediaType.Movie
+              ? 'UPDATE_MOVIES_BY_GENRE'
+              : 'UPDATE_TV_BY_GENRE',
+          payload: { genreId, data },
+        });
+      },
+    }
   );
-
-  useEffect(() => {
-    loadGenreContent(genreId);
-  }, [genreId, loadGenreContent]);
-
-  const { movies, tv } = appContext();
 
   const genres = selectedMedia === MediaType.Movie ? movies.genres : tv.genres;
   const currentGenre = genres.find(({ id }) => genreId === id);
@@ -138,7 +143,7 @@ const GenreSection = ({
     <MediaScroller
       list={mediaScrollerList}
       ratio={isBackdrop ? '16/9' : '2/3'}
-      loading={genreContent.state === 'LOADING'}
+      loading={result.isValidating}
     />
   );
 };

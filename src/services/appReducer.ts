@@ -1,4 +1,5 @@
 import { ActionObjects, State } from '../types/common';
+import { getMoviesFromApiResult, getTVsFromApiResult } from '../utils/utils';
 
 export default function appReducer(state: State, action: ActionObjects): State {
   switch (action.type) {
@@ -7,7 +8,7 @@ export default function appReducer(state: State, action: ActionObjects): State {
         ...state,
         movies: {
           ...state.movies,
-          trending: action.payload,
+          trending: getMoviesFromApiResult(action.payload.results),
         },
       };
     case 'UPDATE_TRENDING_TV_BY_DAY':
@@ -15,7 +16,7 @@ export default function appReducer(state: State, action: ActionObjects): State {
         ...state,
         tv: {
           ...state.movies,
-          trending: action.payload,
+          trending: getTVsFromApiResult(action.payload.results),
         },
       };
     case 'UPDATE_POPULAR_MOVIES':
@@ -23,7 +24,7 @@ export default function appReducer(state: State, action: ActionObjects): State {
         ...state,
         movies: {
           ...state.movies,
-          popular: action.payload,
+          popular: getMoviesFromApiResult(action.payload.results),
         },
       };
     case 'UPDATE_UPCOMING_MOVIES':
@@ -31,7 +32,7 @@ export default function appReducer(state: State, action: ActionObjects): State {
         ...state,
         movies: {
           ...state.movies,
-          upcoming: action.payload,
+          upcoming: getMoviesFromApiResult(action.payload.results),
         },
       };
 
@@ -39,7 +40,7 @@ export default function appReducer(state: State, action: ActionObjects): State {
       const { genres } = state.movies;
       const updatedGenres = genres.map((genre) => {
         if (genre.id === action.payload.genreId) {
-          genre.data = action.payload.data;
+          genre.data = getMoviesFromApiResult(action.payload.data.results);
         }
         return genre;
       });
@@ -57,7 +58,7 @@ export default function appReducer(state: State, action: ActionObjects): State {
       const { genres } = state.tv;
       const updatedGenres = genres.map((genre) => {
         if (genre.id === action.payload.genreId) {
-          genre.data = action.payload.data;
+          genre.data = getTVsFromApiResult(action.payload.data.results);
         }
         return genre;
       });
@@ -76,11 +77,17 @@ export default function appReducer(state: State, action: ActionObjects): State {
         ...state,
         tv: {
           ...state.tv,
-          genres: action.payload.tvGenres,
+          genres: action.payload.tvGenres.map((genre) => ({
+            ...genre,
+            data: [],
+          })),
         },
         movies: {
           ...state.movies,
-          genres: action.payload.movieGenres,
+          genres: action.payload.movieGenres.map((genre) => ({
+            ...genre,
+            data: [],
+          })),
         },
       };
     }

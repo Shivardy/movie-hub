@@ -1,4 +1,11 @@
 import { ImageSize } from '../utils/constants';
+import {
+  GenreMovies,
+  PopularMovies,
+  TrendingMovies,
+  UpcomingMovies,
+} from './Movies';
+import { GenreTv, TrendingTv } from './Tv';
 
 export type ImageType = keyof typeof ImageSize;
 
@@ -19,6 +26,9 @@ export enum MediaType {
 export type Genre = {
   id: number;
   name: string;
+};
+
+type GenreWithData = Genre & {
   data: Media[];
 };
 
@@ -27,32 +37,49 @@ export type State = {
     upcoming: Media[];
     popular: Media[];
     trending: Media[];
-    genres: Genre[];
+    genres: GenreWithData[];
   };
   tv: {
     trending: Media[];
-    genres: Genre[];
+    genres: GenreWithData[];
   };
 };
 
 export type ActionObjects =
-  | {
-      type:
-        | 'UPDATE_TRENDING_MOVIES_BY_DAY'
-        | 'UPDATE_TRENDING_TV_BY_DAY'
-        | 'UPDATE_UPCOMING_MOVIES'
-        | 'UPDATE_POPULAR_MOVIES';
-      payload: Media[];
-    }
-  | ContentByGenre
-  | UpdateGenres;
+  | TvByGenre
+  | MoviesByGenre
+  | TrendingMoviesByDay
+  | TrendingTvByDay
+  | UpdateGenres
+  | UpdatePopularMovies
+  | UpdateUpcomingMovies;
 
-type ContentByGenre = {
-  type: 'UPDATE_MOVIES_BY_GENRE' | 'UPDATE_TV_BY_GENRE';
-  payload: {
-    data: Media[];
-    genreId: number;
-  };
+type UpdateUpcomingMovies = {
+  type: 'UPDATE_UPCOMING_MOVIES';
+  payload: UpcomingMovies;
+};
+
+type UpdatePopularMovies = {
+  type: 'UPDATE_POPULAR_MOVIES';
+  payload: PopularMovies;
+};
+
+type TrendingTvByDay = {
+  type: 'UPDATE_TRENDING_TV_BY_DAY';
+  payload: TrendingTv;
+};
+type TrendingMoviesByDay = {
+  type: 'UPDATE_TRENDING_MOVIES_BY_DAY';
+  payload: TrendingMovies;
+};
+type MoviesByGenre = {
+  type: 'UPDATE_MOVIES_BY_GENRE';
+  payload: { data: GenreMovies; genreId: number };
+};
+
+type TvByGenre = {
+  type: 'UPDATE_TV_BY_GENRE';
+  payload: { data: GenreTv; genreId: number };
 };
 
 type UpdateGenres = {
