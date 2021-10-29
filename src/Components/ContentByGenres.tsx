@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { useInView } from 'react-intersection-observer';
 import styled from 'styled-components';
 import useSWR from 'swr';
 import { appContext } from '../AppContext';
 import Button from '../Elements/Button';
 import MediaScroller from '../Elements/MediaScroller';
 import { ButtonContainer, Header } from '../Elements/StyledElements';
+import useInView from '../hooks/useInView';
 import { multiFetcher } from '../services/api';
 import { Genre, MediaType } from '../types/common';
 import { getImageSrc, getUrl } from '../utils/utils';
