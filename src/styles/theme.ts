@@ -72,7 +72,7 @@ export const GlobalStyles = createGlobalStyle`
   html {
     /* grow as per screen width */
     font-size: calc(1px + 1vw);
-    line-height: calc(1.1rem + 0.5vw);
+    line-height: calc(1.5rem + 0.5vw);
     block-size: 100%;
     background-color: ${({ theme }) => theme.colors.surface1};
     color: ${({ theme }) => theme.colors.text1};

@@ -76,3 +76,5 @@ export function debounce<T extends Function>(fn: T, time = 50) {
     }, time);
   };
 }
+
+export const isTouchScreen = () => 'ontouchstart' in window;

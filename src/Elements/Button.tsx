@@ -25,8 +25,8 @@ const StyledButton = styled.button<StyledButtonProps>`
   text-transform: capitalize;
   cursor: pointer;
 
-  padding-block: ${(props) => props.theme.size.xxs};
-  padding-inline: ${(props) => props.theme.size.xl};
+  padding-block: ${(props) => props.theme.size.xxxs};
+  padding-inline: ${(props) => props.theme.size.md};
 `;
 
 type ButtonOwnProps = {

@@ -1,32 +1,17 @@
 import React, { useState } from 'react';
-import useSWR from 'swr';
-import { appContext } from '../AppContext';
 import Button from '../Elements/Button';
 import MediaScroller from '../Elements/MediaScroller';
 import { ButtonContainer, Header } from '../Elements/StyledElements';
+import useTrending from '../hooks/data/useTrending';
 import { MediaType } from '../types/common';
-import { getImageSrc, getUrl } from '../utils/utils';
+import { getImageSrc } from '../utils/utils';
 
 const Trending = () => {
   const [selectedMedia, setSelectedMedia] = useState<MediaType>(
     MediaType.Movie
   );
 
-  const { dispatch, movies, tv } = appContext();
-  const result = useSWR(getUrl(`trending/${selectedMedia}/day`), {
-    onSuccess: (data) => {
-      dispatch({
-        type:
-          selectedMedia === MediaType.Movie
-            ? 'UPDATE_TRENDING_MOVIES_BY_DAY'
-            : 'UPDATE_TRENDING_TV_BY_DAY',
-        payload: data as any,
-      });
-    },
-  });
-
-  const data =
-    selectedMedia === MediaType.Movie ? movies.trending : tv.trending;
+  const { data = [], isLoading } = useTrending(selectedMedia);
 
   const mediaScrollerList = data.map(
     ({ id, title, poster_path, release_date }) => ({
@@ -68,11 +53,7 @@ const Trending = () => {
         </ButtonContainer>
       </Header>
 
-      <MediaScroller
-        list={mediaScrollerList}
-        ratio="2/3"
-        loading={result.isValidating || result.error}
-      />
+      <MediaScroller list={mediaScrollerList} ratio="2/3" loading={isLoading} />
     </section>
   );
 };

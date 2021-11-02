@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import styled from 'styled-components';
-import { debounce } from '../utils/utils';
+import { debounce, isTouchScreen } from '../utils/utils';
 
 const Div = styled.div`
   position: relative;
@@ -203,16 +203,24 @@ const MediaScroller = ({
 
   return (
     <Div>
-      <Arrow bsize={height} onClick={scrollToLeft} isHidden={isHiddenLeftArrow}>
-        ‹
-      </Arrow>
-      <Arrow
-        bsize={height}
-        onClick={scrollToRight}
-        isHidden={isHiddenRightArrow}
-      >
-        ›
-      </Arrow>
+      {!loading && !isTouchScreen() && (
+        <>
+          <Arrow
+            bsize={height}
+            onClick={scrollToLeft}
+            isHidden={isHiddenLeftArrow}
+          >
+            ‹
+          </Arrow>
+          <Arrow
+            bsize={height}
+            onClick={scrollToRight}
+            isHidden={isHiddenRightArrow}
+          >
+            ›
+          </Arrow>
+        </>
+      )}
       <MediaScrollerUL ref={mediaList} onScroll={debounce(handleScroll)}>
         {data.map((item, index) => (
           <ListItem

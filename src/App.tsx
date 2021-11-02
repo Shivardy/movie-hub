@@ -1,18 +1,26 @@
 import React from 'react';
 import { SkeletonTheme } from 'react-loading-skeleton';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import { ThemeProvider } from 'styled-components';
-import { SWRConfig } from 'swr';
 import { AppContextProvider } from './AppContext';
 import ContentByGenres from './Components/ContentByGenres';
 import DiscoverMovies from './Components/DiscoverMovies';
 import Trending from './Components/Trending';
 import useDarkMode from './hooks/useDarkMode';
-import { swrConfig } from './services/api';
 import { getTheme, GlobalStyles } from './styles/theme';
 
 function App() {
   const isDarkMode = useDarkMode();
   const theme = getTheme(isDarkMode);
+
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        refetchOnWindowFocus: false,
+        staleTime: Infinity,
+      },
+    },
+  });
 
   return (
     <ThemeProvider theme={theme}>
@@ -22,11 +30,11 @@ function App() {
           color={theme.colors.surface2}
           highlightColor={theme.colors.surface1}
         >
-          <SWRConfig value={swrConfig}>
+          <QueryClientProvider client={queryClient}>
             <Trending />
             <DiscoverMovies />
             <ContentByGenres />
-          </SWRConfig>
+          </QueryClientProvider>
         </SkeletonTheme>
       </AppContextProvider>
     </ThemeProvider>

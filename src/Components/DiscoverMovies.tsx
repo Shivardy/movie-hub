@@ -1,16 +1,11 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import useSWR from 'swr';
-import { appContext } from '../AppContext';
 import Button from '../Elements/Button';
 import MediaScroller from '../Elements/MediaScroller';
 import { ButtonContainer, Header } from '../Elements/StyledElements';
-import { getImageSrc, getUrl } from '../utils/utils';
-
-enum MovieType {
-  Popular = 'popular',
-  Upcoming = 'upcoming',
-}
+import useDiscoverMovies from '../hooks/data/useDiscoverMovies';
+import { MovieType } from '../types/common';
+import { getImageSrc } from '../utils/utils';
 
 const Section = styled.section`
   background-image: linear-gradient(
@@ -23,24 +18,7 @@ const Section = styled.section`
 const DiscoverMovies = () => {
   const [movieType, setMovieType] = useState<MovieType>(MovieType.Popular);
 
-  const {
-    dispatch,
-    movies: { popular, upcoming },
-  } = appContext();
-
-  const result = useSWR(getUrl(`movie/${movieType}`), {
-    onSuccess: (data) => {
-      dispatch({
-        type:
-          movieType === MovieType.Popular
-            ? 'UPDATE_POPULAR_MOVIES'
-            : 'UPDATE_UPCOMING_MOVIES',
-        payload: data,
-      });
-    },
-  });
-
-  const data = movieType === MovieType.Popular ? popular : upcoming;
+  const { data = [], isLoading } = useDiscoverMovies(movieType);
 
   const mediaScrollerList = data.map(
     ({ id, title, backdrop_path, release_date }) => ({
@@ -83,7 +61,7 @@ const DiscoverMovies = () => {
 
       <MediaScroller
         list={mediaScrollerList}
-        loading={result.isValidating || result.error}
+        loading={isLoading}
         ratio="16/9"
       />
     </Section>
