@@ -9,7 +9,7 @@ import {
   getUrl,
 } from '../../utils/utils';
 
-function useContentByGenre(type: MediaType, genreId: number) {
+function useContentByGenre(type: MediaType, genreId: number, enabled = false) {
   return useQuery<
     GenreMovies | GenreTv,
     string,
@@ -24,6 +24,7 @@ function useContentByGenre(type: MediaType, genreId: number) {
           ? getMoviesFromApiResult((data as GenreMovies).results)
           : getTVsFromApiResult((data as GenreTv).results);
       },
+      enabled,
     }
   );
 }

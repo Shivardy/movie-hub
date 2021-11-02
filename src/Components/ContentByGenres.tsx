@@ -21,7 +21,7 @@ const ContentByGenres = () => {
         <MediaScroller list={[]} loading ratio={'2/3'} />
       ) : (
         commonGenres.map((genre, index) => (
-          <GenreSectionWrapper genre={genre} key={genre.id} index={index} />
+          <GenreSection genre={genre} key={genre.id} index={index} />
         ))
       )}
     </>
@@ -38,15 +38,38 @@ const Section = styled.section<{ isBackdrop: boolean }>`
     )`
       : 'none'};
 `;
-type GenreSectionWrapperProps = { genre: Genre; index: number };
+type GenreSectionProps = { genre: Genre; index: number };
 
-const GenreSectionWrapper = ({ genre, index }: GenreSectionWrapperProps) => {
+const GenreSection = ({ genre, index }: GenreSectionProps) => {
   const { ref, inView } = useInView({ triggerOnce: true });
   const [selectedMedia, setSelectedMedia] = useState<MediaType>(
     MediaType.Movie
   );
-
   const isBackdrop = index % 2 === 1;
+
+  // conditionally fetch only if the section is in view.
+  const { data = [], isLoading } = useContentByGenre(
+    selectedMedia,
+    genre.id,
+    inView
+  );
+
+  const mediaScrollerList = data.map(
+    ({ id, title, poster_path, backdrop_path, release_date }) => ({
+      id,
+      title,
+      image: getImageSrc(
+        isBackdrop ? backdrop_path : poster_path,
+        isBackdrop ? 'backdrop' : 'poster'
+      ),
+      caption: new Date(release_date).toLocaleDateString('en-us', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+      }),
+    })
+  );
+
   return (
     <Section ref={ref} isBackdrop={isBackdrop}>
       <Header>
@@ -66,51 +89,13 @@ const GenreSectionWrapper = ({ genre, index }: GenreSectionWrapperProps) => {
           </Button>
         </ButtonContainer>
       </Header>
-      {inView ? (
-        <GenreSection
-          genreId={genre.id}
-          selectedMedia={selectedMedia}
-          isBackdrop={isBackdrop}
-        />
-      ) : (
-        <MediaScroller list={[]} loading ratio={isBackdrop ? '16/9' : '2/3'} />
-      )}
+      <MediaScroller
+        list={mediaScrollerList}
+        ratio={isBackdrop ? '16/9' : '2/3'}
+        // if not in the view just render loading screen
+        loading={inView ? isLoading : true}
+      />
     </Section>
-  );
-};
-type GenreSectionProps = {
-  genreId: number;
-  selectedMedia: MediaType;
-  isBackdrop: boolean;
-};
-const GenreSection = ({
-  genreId,
-  selectedMedia,
-  isBackdrop,
-}: GenreSectionProps) => {
-  const { data = [], isLoading } = useContentByGenre(selectedMedia, genreId);
-
-  const mediaScrollerList =
-    data.map(({ id, title, poster_path, backdrop_path, release_date }) => ({
-      id,
-      title,
-      image: getImageSrc(
-        isBackdrop ? backdrop_path : poster_path,
-        isBackdrop ? 'backdrop' : 'poster'
-      ),
-      caption: new Date(release_date).toLocaleDateString('en-us', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-      }),
-    })) || [];
-
-  return (
-    <MediaScroller
-      list={mediaScrollerList}
-      ratio={isBackdrop ? '16/9' : '2/3'}
-      loading={isLoading}
-    />
   );
 };
 
