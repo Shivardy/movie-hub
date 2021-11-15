@@ -1,8 +1,8 @@
 import { useRef, useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import styled from 'styled-components';
-import LeftArrow from '../icons/LeftArrow';
-import RightArrow from '../icons/RightArrow';
+import ArrowLeft from '../icons/ArrowLeft';
+import ArrowRight from '../icons/ArrowRight';
 import { debounce, isTouchScreen } from '../utils/utils';
 
 const Div = styled.div`
@@ -212,14 +212,14 @@ const MediaScroller = ({
             onClick={scrollToLeft}
             isHidden={isHiddenLeftArrow}
           >
-            <LeftArrow />
+            <ArrowLeft />
           </Arrow>
           <Arrow
             bsize={height}
             onClick={scrollToRight}
             isHidden={isHiddenRightArrow}
           >
-            <RightArrow />
+            <ArrowRight />
           </Arrow>
         </>
       )}
