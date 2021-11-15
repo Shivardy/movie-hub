@@ -8,8 +8,8 @@ import {
 } from 'react';
 import styled from 'styled-components';
 import useClickOutside from '../hooks/useClickOutside';
-import DownArrow from '../icons/DownArrow';
-import UpArrow from '../icons/UpArrow';
+import ArrowDown from '../icons/ArrowDown';
+import ArrowUp from '../icons/ArrowUp';
 import { debounce } from '../utils/utils';
 import Button from './Button';
 
@@ -164,7 +164,7 @@ const ButtonGroup = ({ items }: ButtonGroupProps) => {
           ref={iconRef as MutableRefObject<HTMLButtonElement>}
           isHidden={hiddenItems.length === 0}
         >
-          {open ? <UpArrow /> : <DownArrow />}
+          {open ? <ArrowUp /> : <ArrowDown />}
         </IconButton>
       </ButtonWrapper>
 
