@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import Button from '../Elements/Button';
+import ButtonGroup from '../Elements/ButtonGroup';
 import MediaScroller from '../Elements/MediaScroller';
 import { ButtonContainer, Header } from '../Elements/StyledElements';
 import useContentByGenre from '../hooks/data/useContentByGenre';
@@ -10,19 +11,42 @@ import { Genre, MediaType } from '../types/common';
 import { getImageSrc } from '../utils/utils';
 
 const ContentByGenres = () => {
+  const [selectedMedia, setSelectedMedia] = useState<MediaType>(MediaType.Tv);
   const { data, isLoading } = useGenres();
   const { tvGenres = [], movieGenres = [] } = data || {};
   const tvGenresId = tvGenres.map(({ id }) => id);
   const commonGenres = movieGenres.filter(({ id }) => tvGenresId.includes(id));
+  const genres = selectedMedia === MediaType.Movie ? movieGenres : tvGenres;
 
   return (
     <>
       {isLoading ? (
         <MediaScroller list={[]} loading ratio={'2/3'} />
       ) : (
-        commonGenres.map((genre, index) => (
-          <GenreSection genre={genre} key={genre.id} index={index} />
-        ))
+        <>
+          <Header>
+            <h1>Genres</h1>
+            <ButtonContainer>
+              <Button
+                primary={selectedMedia === MediaType.Movie}
+                onClick={() => setSelectedMedia(MediaType.Movie)}
+              >
+                {MediaType.Movie}
+              </Button>
+              <Button
+                primary={selectedMedia === MediaType.Tv}
+                onClick={() => setSelectedMedia(MediaType.Tv)}
+              >
+                {MediaType.Tv}
+              </Button>
+            </ButtonContainer>
+          </Header>
+          <ButtonGroup items={genres} />
+
+          {commonGenres.map((genre, index) => (
+            <GenreSection genre={genre} key={genre.id} index={index} />
+          ))}
+        </>
       )}
     </>
   );

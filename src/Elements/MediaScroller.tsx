@@ -1,6 +1,8 @@
 import { useRef, useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import styled from 'styled-components';
+import LeftArrow from '../icons/LeftArrow';
+import RightArrow from '../icons/RightArrow';
 import { debounce, isTouchScreen } from '../utils/utils';
 
 const Div = styled.div`
@@ -115,7 +117,7 @@ const Image = styled.img<ImageProps>`
 `;
 
 const Figcaption = styled.figcaption`
-  line-height: ${(props) => props.theme.size.md};
+  line-height: ${(props) => props.theme.size.lg};
   font-weight: 600;
   font-size: ${(props) => props.theme.size.md};
 
@@ -210,14 +212,14 @@ const MediaScroller = ({
             onClick={scrollToLeft}
             isHidden={isHiddenLeftArrow}
           >
-            ‹
+            <LeftArrow />
           </Arrow>
           <Arrow
             bsize={height}
             onClick={scrollToRight}
             isHidden={isHiddenRightArrow}
           >
-            ›
+            <RightArrow />
           </Arrow>
         </>
       )}

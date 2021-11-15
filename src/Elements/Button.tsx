@@ -1,8 +1,9 @@
+import React from 'react';
 import styled from 'styled-components';
 
 type StyledButtonProps = { primary: boolean };
 const StyledButton = styled.button<StyledButtonProps>`
-  width: min-content;
+  min-width: max-content;
   height: min-content;
   color: ${({ theme, primary }) => {
     if (primary) {
@@ -38,23 +39,29 @@ type ButtonOwnProps = {
 type ButtonProps = ButtonOwnProps &
   React.ButtonHTMLAttributes<HTMLButtonElement>;
 
-const Button = ({
-  primary = true,
-  onClick,
-  children,
-  disabled = false,
-  ...rest
-}: ButtonProps) => {
-  return (
-    <StyledButton
-      primary={primary}
-      onClick={onClick}
-      disabled={disabled}
-      {...rest}
-    >
-      {children}
-    </StyledButton>
-  );
-};
+const Button = React.forwardRef(
+  (
+    {
+      primary = true,
+      onClick,
+      children,
+      disabled = false,
+      ...rest
+    }: ButtonProps,
+    ref: React.Ref<HTMLButtonElement>
+  ) => {
+    return (
+      <StyledButton
+        ref={ref}
+        primary={primary}
+        onClick={onClick}
+        disabled={disabled}
+        {...rest}
+      >
+        {children}
+      </StyledButton>
+    );
+  }
+);
 
 export default Button;
