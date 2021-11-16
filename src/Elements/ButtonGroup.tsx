@@ -1,17 +1,10 @@
-import {
-  createRef,
-  MutableRefObject,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
-import styled from 'styled-components';
-import useClickOutside from '../hooks/useClickOutside';
-import ArrowDown from '../icons/ArrowDown';
-import ArrowUp from '../icons/ArrowUp';
-import { debounce } from '../utils/utils';
-import Button from './Button';
+import { useCallback, useEffect, useRef, useState } from "react";
+import styled from "styled-components";
+import useClickOutside from "../hooks/useClickOutside";
+import ArrowDown from "../icons/ArrowDown";
+import ArrowUp from "../icons/ArrowUp";
+import { debounce } from "../utils/utils";
+import Button from "./Button";
 
 const StyledButton = styled(Button)<{ isSelected: boolean }>`
   background-color: inherit;
@@ -25,7 +18,7 @@ const StyledButton = styled(Button)<{ isSelected: boolean }>`
     background-color: ${({ theme: { colors } }) => colors.surface4};
   }
 
-  &[aria-hidden='true'] {
+  &[aria-hidden="true"] {
     visibility: hidden;
   }
 `;
@@ -36,44 +29,52 @@ const IconButton = styled(Button)<{ isHidden: boolean }>`
   background-color: inherit;
   z-index: 1;
   color: ${({ theme: { colors } }) => colors.text1};
-  visibility: ${(props) => (props.isHidden ? 'hidden' : 'initial')};
+  visibility: ${(props) => (props.isHidden ? "hidden" : "initial")};
 `;
 
 const ButtonWrapper = styled.div`
   display: flex;
   flex-wrap: nowrap;
-  overflow-y: hidden;
+  overflow-x: hidden;
   border-bottom: 1px solid ${(props) => props.theme.colors.surface4};
   margin-inline: ${(props) => props.theme.size.lg};
   margin-block-end: ${(props) => props.theme.size.md};
   padding-block: ${(props) => props.theme.size.xxxs};
+
+  & > button > svg {
+    width: 2ch;
+  }
 `;
 
-const DropDown = styled.ul`
+const DropDown = styled.div`
   background-color: ${(props) => props.theme.colors.surface3};
   width: max-content;
-  list-style: none;
 
   position: absolute;
   transform: translate(-60%, -20px);
   z-index: 1;
+  display: flex;
+  flex-direction: column;
 
   max-block-size: 200px;
   overflow-y: scroll;
+  scrollbar-width: none;
 
-  & > li {
-    padding-block: ${(props) => props.theme.size.xxxs};
-    padding-inline: ${(props) => props.theme.size.sm};
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
   }
 
-  & > li > button {
+  & > button {
     width: 100%;
+    padding-block: ${(props) => props.theme.size.xs};
     text-align: left;
   }
 `;
 
 const DropDownContainer = styled.div`
   position: relative;
+  width: max-content;
 `;
 
 const getWidthAndHorizontalMargins = (elem: HTMLElement) => {
@@ -86,16 +87,18 @@ const getWidthAndHorizontalMargins = (elem: HTMLElement) => {
 };
 type Item = {
   id: number;
-  name: string;
+  label: string;
+  isSelected: boolean;
+  onClick: React.MouseEventHandler<HTMLButtonElement>;
 };
 type ButtonGroupProps = {
   items: Item[];
 };
 const ButtonGroup = ({ items }: ButtonGroupProps) => {
-  const containerRef = useRef() as MutableRefObject<HTMLDivElement>;
-  const iconRef = useRef() as MutableRefObject<HTMLButtonElement>;
-  const dropDownRef = useRef() as MutableRefObject<HTMLDivElement>;
-  const buttonRefs = useRef(items.map(() => createRef<HTMLButtonElement>()));
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const iconRef = useRef<HTMLButtonElement | null>(null);
+  const dropDownRef = useRef<HTMLDivElement | null>(null);
+  const buttonRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const [hiddenItems, setHiddenItems] = useState<Item[]>([]);
 
   const [open, setOpen] = useState(false);
@@ -104,43 +107,45 @@ const ButtonGroup = ({ items }: ButtonGroupProps) => {
 
   const onWindowResize = useCallback(() => {
     // width of the container and icon
-    const containerWidth = containerRef.current.offsetWidth;
-    let tempWidth = iconRef.current?.offsetWidth || 0;
+    const container = containerRef.current;
+    if (container) {
+      const containerWidth = container.offsetWidth;
+      let occupiedWidth = iconRef.current?.offsetWidth || 0;
 
-    let lastVisible = buttonRefs.current[0].current;
+      let lastVisible = buttonRefs.current[0];
 
-    let hiddenItems: Item[] = [];
-    buttonRefs.current.forEach((item, index) => {
-      const element = item.current;
-      if (element) {
-        const width = getWidthAndHorizontalMargins(element);
-        if (tempWidth + width <= containerWidth) {
-          element.setAttribute('aria-hidden', 'false');
-          lastVisible = element;
-        } else {
-          element.setAttribute('aria-hidden', 'true');
-          hiddenItems.push(items[index]);
+      let hiddenItems: Item[] = [];
+      buttonRefs.current.forEach((element, index) => {
+        if (element) {
+          const width = getWidthAndHorizontalMargins(element);
+          if (occupiedWidth + width <= containerWidth) {
+            element.setAttribute("aria-hidden", "false");
+            lastVisible = element;
+          } else {
+            element.setAttribute("aria-hidden", "true");
+            hiddenItems.push(items[index]);
+          }
+          occupiedWidth += width;
         }
-        tempWidth += width;
-      }
-    });
+      });
 
-    setHiddenItems(hiddenItems);
-    // based on last visible button set iconButton position
-    if (lastVisible && iconRef.current) {
-      iconRef.current.style.left = `${
-        lastVisible.offsetLeft + lastVisible.clientWidth
-      }px`;
-      dropDownRef.current.style.left = `${iconRef.current.offsetLeft}px`;
+      setHiddenItems(hiddenItems);
+      // based on last visible button set iconButton position
+      if (lastVisible && iconRef.current && dropDownRef.current) {
+        iconRef.current.style.left = `${
+          lastVisible.offsetLeft + lastVisible.clientWidth
+        }px`;
+        dropDownRef.current.style.left = `${iconRef.current.offsetLeft}px`;
+      }
     }
   }, [items]);
 
   useEffect(() => {
     onWindowResize();
     const debouncedFunc = debounce(onWindowResize, 100);
-    window.addEventListener('resize', debouncedFunc);
+    window.addEventListener("resize", debouncedFunc);
     return () => {
-      window.removeEventListener('resize', debouncedFunc);
+      window.removeEventListener("resize", debouncedFunc);
     };
   }, [items, onWindowResize]);
 
@@ -152,16 +157,17 @@ const ButtonGroup = ({ items }: ButtonGroupProps) => {
         {items.map((item, i) => (
           <StyledButton
             key={item.id}
-            onClick={() => console.log(item.name)}
-            isSelected={i % 2 === 0}
-            ref={buttonRefs.current[i]}
+            data-button-id={item.id}
+            onClick={item.onClick}
+            isSelected={item.isSelected}
+            ref={(ref) => (buttonRefs.current[i] = ref)}
           >
-            {item.name}
+            {item.label}
           </StyledButton>
         ))}
         <IconButton
           onClick={handleDropDown}
-          ref={iconRef as MutableRefObject<HTMLButtonElement>}
+          ref={iconRef}
           isHidden={hiddenItems.length === 0}
         >
           {open ? <ArrowUp /> : <ArrowDown />}
@@ -172,14 +178,14 @@ const ButtonGroup = ({ items }: ButtonGroupProps) => {
         {open && (
           <DropDown>
             {hiddenItems.map((item) => (
-              <li key={item.id}>
-                <StyledButton
-                  onClick={() => console.log('shiva')}
-                  isSelected={true}
-                >
-                  {item.name}
-                </StyledButton>
-              </li>
+              <StyledButton
+                key={item.id}
+                onClick={(e) => item.onClick(e)}
+                data-button-id={item.id}
+                isSelected={item.isSelected}
+              >
+                {item.label}
+              </StyledButton>
             ))}
           </DropDown>
         )}
