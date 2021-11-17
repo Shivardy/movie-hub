@@ -98,9 +98,9 @@ const Section = styled.section<{ isBackdrop: boolean }>`
   background-image: ${(props) =>
     props.isBackdrop
       ? `linear-gradient(
-      to bottom,
+      135deg,
       ${props.theme.colors.surface2},
-      ${props.theme.colors.surface3}
+      ${props.theme.colors.surface4}
     )`
       : "none"};
 `;

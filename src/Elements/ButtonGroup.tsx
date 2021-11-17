@@ -168,6 +168,7 @@ const ButtonGroup = ({ items }: ButtonGroupProps) => {
         <IconButton
           onClick={handleDropDown}
           ref={iconRef}
+          aria-label="Expand Genres"
           isHidden={hiddenItems.length === 0}
         >
           {open ? <ArrowUp /> : <ArrowDown />}

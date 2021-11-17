@@ -1,9 +1,9 @@
-import { useRef, useState } from 'react';
-import Skeleton from 'react-loading-skeleton';
-import styled from 'styled-components';
-import ArrowLeft from '../icons/ArrowLeft';
-import ArrowRight from '../icons/ArrowRight';
-import { debounce, isTouchScreen } from '../utils/utils';
+import { useRef, useState } from "react";
+import Skeleton from "react-loading-skeleton";
+import styled from "styled-components";
+import ArrowLeft from "../icons/ArrowLeft";
+import ArrowRight from "../icons/ArrowRight";
+import { debounce, isTouchScreen } from "../utils/utils";
 
 const Div = styled.div`
   position: relative;
@@ -26,7 +26,7 @@ const Arrow = styled.span<{ bsize: string; isHidden: boolean }>`
   justify-content: center;
   align-items: center;
 
-  visibility: ${(props) => (props.isHidden ? 'hidden' : 'visible')};
+  visibility: ${(props) => (props.isHidden ? "hidden" : "visible")};
 
   &:nth-of-type(1) {
     left: 0;
@@ -97,7 +97,7 @@ const Figure = styled.figure`
 `;
 
 type ImageProps = {
-  aspectRatio: Exclude<MediaScrollerProps['ratio'], typeof undefined>;
+  aspectRatio: Exclude<MediaScrollerProps["ratio"], typeof undefined>;
   inlineSize: string;
   blockSize: string;
 };
@@ -141,13 +141,13 @@ type ListItemType = {
 
 type MediaScrollerProps = {
   list: ListItemType[];
-  ratio?: '2/3' | '1/1' | '16/9';
+  ratio?: "2/3" | "1/1" | "16/9";
   loading?: boolean;
 };
 
-const getHeightAndWidth = (ratio: MediaScrollerProps['ratio'] = '1/1') => {
-  const [widthRatio, heightRatio] = ratio.split('/').map((i) => +i);
-  const size = '10rem';
+const getHeightAndWidth = (ratio: MediaScrollerProps["ratio"] = "1/1") => {
+  const [widthRatio, heightRatio] = ratio.split("/").map((i) => +i);
+  const size = "10rem";
   const height =
     widthRatio > heightRatio ? size : `${(10 * heightRatio) / widthRatio}rem`;
   const width =
@@ -157,11 +157,11 @@ const getHeightAndWidth = (ratio: MediaScrollerProps['ratio'] = '1/1') => {
 
 const MediaScroller = ({
   list,
-  ratio = '1/1',
+  ratio = "1/1",
   loading = false,
 }: MediaScrollerProps) => {
   const [height, width] = getHeightAndWidth(ratio);
-  const mediaList = useRef<HTMLUListElement>(document.createElement('ul'));
+  const mediaList = useRef<HTMLUListElement>(document.createElement("ul"));
   const [isHiddenLeftArrow, setIsHiddenLeftArrow] = useState(true);
   const [isHiddenRightArrow, setIsHiddenRightArrow] = useState(false);
 
@@ -170,7 +170,7 @@ const MediaScroller = ({
     mediaList.current.scrollTo({
       top: 0,
       left: scrollLeft + offsetWidth,
-      behavior: 'smooth',
+      behavior: "smooth",
     });
   };
 
@@ -179,7 +179,7 @@ const MediaScroller = ({
     mediaList.current.scrollTo({
       top: 0,
       left: scrollLeft - offsetWidth,
-      behavior: 'smooth',
+      behavior: "smooth",
     });
   };
 
@@ -244,7 +244,7 @@ type ListItemProps = {
   item: ListItemType;
   width: string;
   height: string;
-  ratio: Exclude<MediaScrollerProps['ratio'], undefined>;
+  ratio: Exclude<MediaScrollerProps["ratio"], undefined>;
 };
 
 const ListItem = ({ height, item, width, ratio }: ListItemProps) => {

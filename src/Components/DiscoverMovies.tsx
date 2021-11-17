@@ -1,17 +1,17 @@
-import { useState } from 'react';
-import styled from 'styled-components';
-import Button from '../Elements/Button';
-import MediaScroller from '../Elements/MediaScroller';
-import { ButtonContainer, Header } from '../Elements/StyledElements';
-import useDiscoverMovies from '../hooks/data/useDiscoverMovies';
-import { MovieType } from '../types/common';
-import { getImageSrc } from '../utils/utils';
+import { useState } from "react";
+import styled from "styled-components";
+import Button from "../Elements/Button";
+import MediaScroller from "../Elements/MediaScroller";
+import { ButtonContainer, Header } from "../Elements/StyledElements";
+import useDiscoverMovies from "../hooks/data/useDiscoverMovies";
+import { MovieType } from "../types/common";
+import { getImageSrc } from "../utils/utils";
 
 const Section = styled.section`
   background-image: linear-gradient(
-    to bottom,
+    135deg,
     ${(props) => props.theme.colors.surface2},
-    ${(props) => props.theme.colors.surface3}
+    ${(props) => props.theme.colors.surface4}
   );
 `;
 
@@ -24,11 +24,11 @@ const DiscoverMovies = () => {
     ({ id, title, backdrop_path, release_date }) => ({
       id,
       title,
-      image: getImageSrc(backdrop_path, 'backdrop'),
-      caption: new Date(release_date).toLocaleDateString('en-us', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
+      image: getImageSrc(backdrop_path, "backdrop"),
+      caption: new Date(release_date).toLocaleDateString("en-us", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
       }),
     })
   );
