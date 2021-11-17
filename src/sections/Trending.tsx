@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Button from "../components/Button";
 import MediaScroller from "../components/MediaScroller";
 import { ButtonContainer, Header } from "../components/StyledElements";
