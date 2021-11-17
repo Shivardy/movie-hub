@@ -1,13 +1,13 @@
-import React from 'react';
-import { SkeletonTheme } from 'react-loading-skeleton';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { ThemeProvider } from 'styled-components';
-import { AppContextProvider } from './AppContext';
-import ContentByGenres from './Components/ContentByGenres';
-import DiscoverMovies from './Components/DiscoverMovies';
-import Trending from './Components/Trending';
-import useDarkMode from './hooks/useDarkMode';
-import { getTheme, GlobalStyles } from './styles/theme';
+import React from "react";
+import { SkeletonTheme } from "react-loading-skeleton";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { ThemeProvider } from "styled-components";
+import { AppContextProvider } from "./AppContext";
+import ContentByGenres from "./sections/ContentByGenres";
+import DiscoverMovies from "./sections/DiscoverMovies";
+import Trending from "./sections/Trending";
+import useDarkMode from "./hooks/useDarkMode";
+import { getTheme, GlobalStyles } from "./styles/theme";
 
 function App() {
   const isDarkMode = useDarkMode();

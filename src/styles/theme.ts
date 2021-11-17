@@ -1,10 +1,10 @@
-import { createGlobalStyle } from 'styled-components';
+import { createGlobalStyle } from "styled-components";
 
 export const getTheme = (isDarkMode = false) => {
   /* brand foundation */
-  const hue = '200';
-  const saturation = '100%';
-  const lightness = '50%';
+  const hue = "200";
+  const saturation = "100%";
+  const lightness = "50%";
 
   /* light */
   const light = {
@@ -16,7 +16,7 @@ export const getTheme = (isDarkMode = false) => {
     surface3: `hsl(${hue} 20% 92%)`,
     surface4: `hsl(${hue} 20% 85%)`,
     surfaceShadow: `hsl(${hue} 10% 20%)`,
-    shadowStrength: '0.02',
+    shadowStrength: "0.02",
   };
 
   const dark = {
@@ -28,7 +28,7 @@ export const getTheme = (isDarkMode = false) => {
     surface3: `hsl(${hue} 5% 20%)`,
     surface4: `hsl(${hue} 5% 25%)`,
     surfaceShadow: `hsl(${hue} 50% 3%)`,
-    shadowStrength: '0.8',
+    shadowStrength: "0.8",
   };
 
   function sizeStepUp(n: number, up = true): string {
@@ -55,16 +55,16 @@ export const getTheme = (isDarkMode = false) => {
       xxxl: sizeStepUp(5),
     },
     mediaQueries: {
-      below1400: 'only screen and (max-width: 1400px)',
-      below768: 'only screen and (max-width: 768px)',
-      below375: 'only screen and (max-width: 375px)',
+      below1400: "only screen and (max-width: 1400px)",
+      below768: "only screen and (max-width: 768px)",
+      below375: "only screen and (max-width: 375px)",
     },
   };
 };
 
 const theme = getTheme();
 type ThemeType = typeof theme;
-declare module 'styled-components' {
+declare module "styled-components" {
   export interface DefaultTheme extends ThemeType {}
 }
 
@@ -101,5 +101,9 @@ export const GlobalStyles = createGlobalStyle`
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+  }
+
+  section {
+    padding-block: 1rem;
   }
 `;
