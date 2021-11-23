@@ -1,8 +1,10 @@
-import { useRef, useState } from "react";
+import { Link } from "@reach/router";
+import { useCallback, useRef, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 import ArrowLeft from "../icons/ArrowLeft";
 import ArrowRight from "../icons/ArrowRight";
+import { MediaType } from "../types/common";
 import { debounce, isTouchScreen } from "../utils/utils";
 
 const Div = styled.div`
@@ -143,6 +145,7 @@ type MediaScrollerProps = {
   list: ListItemType[];
   ratio?: "2/3" | "1/1" | "16/9";
   loading?: boolean;
+  mediaType?: MediaType;
 };
 
 const getHeightAndWidth = (ratio: MediaScrollerProps["ratio"] = "1/1") => {
@@ -159,31 +162,32 @@ const MediaScroller = ({
   list,
   ratio = "1/1",
   loading = false,
+  mediaType = MediaType.Movie,
 }: MediaScrollerProps) => {
   const [height, width] = getHeightAndWidth(ratio);
   const mediaList = useRef<HTMLUListElement>(document.createElement("ul"));
   const [isHiddenLeftArrow, setIsHiddenLeftArrow] = useState(true);
   const [isHiddenRightArrow, setIsHiddenRightArrow] = useState(false);
 
-  const scrollToRight = () => {
+  const scrollToRight = useCallback(() => {
     const { offsetWidth, scrollLeft } = mediaList.current;
     mediaList.current.scrollTo({
       top: 0,
       left: scrollLeft + offsetWidth,
       behavior: "smooth",
     });
-  };
+  }, []);
 
-  const scrollToLeft = () => {
+  const scrollToLeft = useCallback(() => {
     const { offsetWidth, scrollLeft } = mediaList.current;
     mediaList.current.scrollTo({
       top: 0,
       left: scrollLeft - offsetWidth,
       behavior: "smooth",
     });
-  };
+  }, []);
 
-  const handleScroll = () => {
+  const handleScroll = useCallback(() => {
     const { offsetWidth, scrollLeft, scrollWidth } = mediaList.current;
 
     if (offsetWidth + scrollLeft >= scrollWidth) {
@@ -197,7 +201,7 @@ const MediaScroller = ({
     } else if (isHiddenLeftArrow) {
       setIsHiddenLeftArrow(false);
     }
-  };
+  }, [isHiddenLeftArrow, isHiddenRightArrow]);
 
   const data = loading
     ? (Array(10).fill({ image: {} }) as ListItemType[])
@@ -231,6 +235,7 @@ const MediaScroller = ({
             width={width}
             height={height}
             ratio={ratio}
+            mediaType={mediaType}
           />
         ))}
       </MediaScrollerUL>
@@ -245,11 +250,12 @@ type ListItemProps = {
   width: string;
   height: string;
   ratio: Exclude<MediaScrollerProps["ratio"], undefined>;
+  mediaType: MediaType;
 };
 
-const ListItem = ({ height, item, width, ratio }: ListItemProps) => {
-  return (
-    <MediaItem inlineSize={width}>
+const ListItem = ({ height, item, width, ratio, mediaType }: ListItemProps) => (
+  <MediaItem inlineSize={width}>
+    <Link to={`/${mediaType}/${item.id}`}>
       <Figure>
         <picture>
           {item.image.src ? (
@@ -276,6 +282,6 @@ const ListItem = ({ height, item, width, ratio }: ListItemProps) => {
           {item.caption && <p>{item.caption}</p>}
         </Figcaption>
       </Figure>
-    </MediaItem>
-  );
-};
+    </Link>
+  </MediaItem>
+);

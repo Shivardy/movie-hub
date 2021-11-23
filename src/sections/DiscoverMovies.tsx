@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import styled from "styled-components";
 import Button from "../components/Button";
 import MediaScroller from "../components/MediaScroller";
@@ -33,10 +33,14 @@ const DiscoverMovies = () => {
     })
   );
 
-  const handleButton = () =>
-    setMovieType(
-      movieType === MovieType.Popular ? MovieType.Upcoming : MovieType.Popular
-    );
+  const handleButton = useCallback(
+    () =>
+      setMovieType(
+        movieType === MovieType.Popular ? MovieType.Upcoming : MovieType.Popular
+      ),
+    [movieType]
+  );
+
   return (
     <Section id="discover-movies">
       <Header>

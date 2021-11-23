@@ -1,22 +1,22 @@
-import { useQuery } from 'react-query';
-import { fetcher } from '../../services/api';
-import { Media, MediaType } from '../../types/common';
-import { GenreMovies } from '../../types/Movies';
-import { GenreTv } from '../../types/Tv';
+import { useQuery } from "react-query";
+import { fetcher } from "../../services/api";
+import { Media, MediaType } from "../../types/common";
+import { GenreMovies } from "../../types/Movies";
+import { GenreTv } from "../../types/Tv";
 import {
   getMoviesFromApiResult,
   getTVsFromApiResult,
   getUrl,
-} from '../../utils/utils';
+} from "../../utils/utils";
 
 function useContentByGenre(type: MediaType, genreId: number, enabled = false) {
   return useQuery<
     GenreMovies | GenreTv,
     string,
     Media[],
-    ['genre', MediaType, number]
+    [MediaType, "genre", number]
   >(
-    ['genre', type, genreId],
+    [type, "genre", genreId],
     () => fetcher(getUrl(`discover/${type}`, `&with_genres=${genreId}`)),
     {
       select: (data) => {

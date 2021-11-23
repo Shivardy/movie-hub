@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import Button from "../components/Button";
 import MediaScroller from "../components/MediaScroller";
 import { ButtonContainer, Header } from "../components/StyledElements";
@@ -26,10 +26,13 @@ const Trending = () => {
     })
   );
 
-  const handleButton = () =>
-    setSelectedMedia(
-      selectedMedia === MediaType.Movie ? MediaType.Tv : MediaType.Movie
-    );
+  const handleButton = useCallback(
+    () =>
+      setSelectedMedia(
+        selectedMedia === MediaType.Movie ? MediaType.Tv : MediaType.Movie
+      ),
+    [selectedMedia]
+  );
 
   return (
     <section id="trending">
@@ -53,7 +56,12 @@ const Trending = () => {
         </ButtonContainer>
       </Header>
 
-      <MediaScroller list={mediaScrollerList} ratio="2/3" loading={isLoading} />
+      <MediaScroller
+        list={mediaScrollerList}
+        ratio="2/3"
+        loading={isLoading}
+        mediaType={selectedMedia}
+      />
     </section>
   );
 };

@@ -106,4 +106,9 @@ export const GlobalStyles = createGlobalStyle`
   section {
     padding-block: 1rem;
   }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
 `;

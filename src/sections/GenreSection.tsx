@@ -74,6 +74,7 @@ const GenreSection = ({ genre, index }: GenreSectionProps) => {
         ratio={isBackdrop ? "16/9" : "2/3"}
         // if not in the view just render loading screen
         loading={inView ? isLoading : true}
+        mediaType={selectedMedia}
       />
     </Section>
   );

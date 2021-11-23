@@ -10,7 +10,9 @@ import { getImageSrc } from "../utils/utils";
 import GenreSection from "./GenreSection";
 
 const ContentByGenres = () => {
-  const [selectedMedia, setSelectedMedia] = useState<MediaType>(MediaType.Tv);
+  const [selectedMedia, setSelectedMedia] = useState<MediaType>(
+    MediaType.Movie
+  );
   const { data, isLoading } = useGenres();
   const { tvGenres = [], movieGenres = [] } = data || {};
   const tvGenresId = tvGenres.map(({ id }) => id);
@@ -83,6 +85,7 @@ const ContentByGenres = () => {
               list={mediaScrollerList}
               ratio={"2/3"}
               loading={genreDataIsLoading}
+              mediaType={selectedMedia}
             />
           </section>
 
