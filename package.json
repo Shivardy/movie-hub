@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "https://Shivardy.github.io/movie-hub",
   "dependencies": {
+    "@reach/router": "^1.3.4",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
@@ -47,6 +48,7 @@
     ]
   },
   "devDependencies": {
+    "@types/reach__router": "^1.3.9",
     "@types/styled-components": "^5.1.14",
     "gh-pages": "^3.2.3"
   }

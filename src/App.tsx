@@ -1,12 +1,11 @@
+import { Router } from "@reach/router";
 import React from "react";
 import { SkeletonTheme } from "react-loading-skeleton";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ThemeProvider } from "styled-components";
 import { AppContextProvider } from "./AppContext";
-import ContentByGenres from "./sections/ContentByGenres";
-import DiscoverMovies from "./sections/DiscoverMovies";
-import Trending from "./sections/Trending";
 import useDarkMode from "./hooks/useDarkMode";
+import Home from "./sections/Home";
 import { getTheme, GlobalStyles } from "./styles/theme";
 
 function App() {
@@ -31,9 +30,9 @@ function App() {
           highlightColor={theme.colors.surface1}
         >
           <QueryClientProvider client={queryClient}>
-            <Trending />
-            <DiscoverMovies />
-            <ContentByGenres />
+            <Router>
+              <Home path="/" />
+            </Router>
           </QueryClientProvider>
         </SkeletonTheme>
       </AppContextProvider>
