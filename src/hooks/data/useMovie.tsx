@@ -1,6 +1,7 @@
 import { useQuery } from "react-query";
+import { queryClient } from "../../App";
 import { fetcher } from "../../services/api";
-import { Movie } from "../../types/Movies";
+import { Movie, MovieResult } from "../../types/Movies";
 import { getUrl } from "../../utils/utils";
 
 function useMovie(id: number) {
@@ -8,14 +9,20 @@ function useMovie(id: number) {
     ["movie", id],
     () => fetcher(getUrl(`movie/${id}`)),
     {
-      // initialData: () => {
-      //   const temp =
-      //     queryClient.getQueriesData<{ results: MovieResult[] }>("movie");
-      //   console.log(temp);
-      //   return {} as any as MovieResult;
-      //   // return temp.results?.find((d: any) => d.id == id);
-      // },
-      // staleTime: 0,
+      initialData: () => {
+        const queryData = queryClient.getQueriesData<{
+          results: Omit<MovieResult, "genre_ids">[];
+        }>("movie");
+
+        const movies = queryData
+          .map(([key, data]) => data)
+          .filter((data) => data !== undefined)
+          .flatMap((data) => data.results);
+
+        const movie = movies.find((data) => data.id === id);
+        return movie as Movie;
+      },
+      staleTime: 0,
     }
   );
 }

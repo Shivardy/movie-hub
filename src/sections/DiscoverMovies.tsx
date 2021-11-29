@@ -5,7 +5,7 @@ import MediaScroller from "../components/MediaScroller";
 import { ButtonContainer, Header } from "../components/StyledElements";
 import useDiscoverMovies from "../hooks/data/useDiscoverMovies";
 import { MovieType } from "../types/common";
-import { getImageSrc } from "../utils/utils";
+import { getImageSrc, getReleaseDate } from "../utils/utils";
 
 const Section = styled.section`
   background-image: linear-gradient(
@@ -25,11 +25,7 @@ const DiscoverMovies = () => {
       id,
       title,
       image: getImageSrc(backdrop_path, "backdrop"),
-      caption: new Date(release_date).toLocaleDateString("en-us", {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-      }),
+      caption: getReleaseDate(release_date),
     })
   );
 

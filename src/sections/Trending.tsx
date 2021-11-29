@@ -4,7 +4,7 @@ import MediaScroller from "../components/MediaScroller";
 import { ButtonContainer, Header } from "../components/StyledElements";
 import useTrending from "../hooks/data/useTrending";
 import { MediaType } from "../types/common";
-import { getImageSrc } from "../utils/utils";
+import { getImageSrc, getReleaseDate } from "../utils/utils";
 
 const Trending = () => {
   const [selectedMedia, setSelectedMedia] = useState<MediaType>(
@@ -18,11 +18,7 @@ const Trending = () => {
       id,
       title,
       image: getImageSrc(poster_path, "poster"),
-      caption: new Date(release_date).toLocaleDateString("en-us", {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-      }),
+      caption: getReleaseDate(release_date),
     })
   );
 

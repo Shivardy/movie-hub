@@ -1,6 +1,8 @@
-import { ImageSize } from '../utils/constants';
+import { ImageSize } from "../utils/constants";
 
 export type ImageType = keyof typeof ImageSize;
+
+export type ImageRatio = "2/3" | "1/1" | "16/9";
 
 export type Media = {
   title: string;
@@ -12,13 +14,13 @@ export type Media = {
 };
 
 export enum MediaType {
-  Movie = 'movie',
-  Tv = 'tv',
+  Movie = "movie",
+  Tv = "tv",
 }
 
 export enum MovieType {
-  Popular = 'popular',
-  Upcoming = 'upcoming',
+  Popular = "popular",
+  Upcoming = "upcoming",
 }
 
 export type Genre = {

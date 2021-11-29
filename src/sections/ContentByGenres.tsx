@@ -6,7 +6,7 @@ import { ButtonContainer, Header } from "../components/StyledElements";
 import useContentByGenre from "../hooks/data/useContentByGenre";
 import useGenres from "../hooks/data/useGenres";
 import { MediaType } from "../types/common";
-import { getImageSrc } from "../utils/utils";
+import { getImageSrc, getReleaseDate } from "../utils/utils";
 import GenreSection from "./GenreSection";
 
 const ContentByGenres = () => {
@@ -48,11 +48,7 @@ const ContentByGenres = () => {
       id,
       title,
       image: getImageSrc(poster_path, "poster"),
-      caption: new Date(release_date).toLocaleDateString("en-us", {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-      }),
+      caption: getReleaseDate(release_date),
     })
   );
 

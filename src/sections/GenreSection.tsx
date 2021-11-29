@@ -6,7 +6,7 @@ import { ButtonContainer, Header } from "../components/StyledElements";
 import useContentByGenre from "../hooks/data/useContentByGenre";
 import useInView from "../hooks/useInView";
 import { Genre, MediaType } from "../types/common";
-import { getImageSrc } from "../utils/utils";
+import { getImageSrc, getReleaseDate } from "../utils/utils";
 
 const Section = styled.section<{ isBackdrop: boolean }>`
   background-image: ${(props) =>
@@ -42,11 +42,7 @@ const GenreSection = ({ genre, index }: GenreSectionProps) => {
         isBackdrop ? backdrop_path : poster_path,
         isBackdrop ? "backdrop" : "poster"
       ),
-      caption: new Date(release_date).toLocaleDateString("en-us", {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-      }),
+      caption: getReleaseDate(release_date),
     })
   );
 

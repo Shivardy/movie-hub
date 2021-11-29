@@ -4,8 +4,12 @@ import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 import ArrowLeft from "../icons/ArrowLeft";
 import ArrowRight from "../icons/ArrowRight";
-import { MediaType } from "../types/common";
-import { debounce, isTouchScreen } from "../utils/utils";
+import { ImageRatio, MediaType } from "../types/common";
+import {
+  debounce,
+  getImageHeightAndWidth,
+  isTouchScreen,
+} from "../utils/utils";
 
 const Div = styled.div`
   position: relative;
@@ -143,19 +147,9 @@ type ListItemType = {
 
 type MediaScrollerProps = {
   list: ListItemType[];
-  ratio?: "2/3" | "1/1" | "16/9";
+  ratio?: ImageRatio;
   loading?: boolean;
   mediaType?: MediaType;
-};
-
-const getHeightAndWidth = (ratio: MediaScrollerProps["ratio"] = "1/1") => {
-  const [widthRatio, heightRatio] = ratio.split("/").map((i) => +i);
-  const size = "10rem";
-  const height =
-    widthRatio > heightRatio ? size : `${(10 * heightRatio) / widthRatio}rem`;
-  const width =
-    widthRatio > heightRatio ? `${(10 * widthRatio) / heightRatio}rem` : size;
-  return [height, width];
 };
 
 const MediaScroller = ({
@@ -164,7 +158,7 @@ const MediaScroller = ({
   loading = false,
   mediaType = MediaType.Movie,
 }: MediaScrollerProps) => {
-  const [height, width] = getHeightAndWidth(ratio);
+  const [height, width] = getImageHeightAndWidth(ratio);
   const mediaList = useRef<HTMLUListElement>(document.createElement("ul"));
   const [isHiddenLeftArrow, setIsHiddenLeftArrow] = useState(true);
   const [isHiddenRightArrow, setIsHiddenRightArrow] = useState(false);
