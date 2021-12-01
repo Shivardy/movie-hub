@@ -4,6 +4,7 @@ import styled from "styled-components";
 import useMovie from "../hooks/data/useMovie";
 import { ImageRatio } from "../types/common";
 import {
+  getBackgroundImageSrc,
   getImageHeightAndWidth,
   getImageSrc,
   getReleaseDate,
@@ -11,10 +12,16 @@ import {
 
 const MovieContainer = styled.div`
   background-image: linear-gradient(
-    135deg,
+    90deg,
     ${(props) => props.theme.colors.surface2},
     ${(props) => props.theme.colors.surface4}
   );
+`;
+
+const ImageContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: ${(props) => props.theme.size.lg};
 `;
 
 type ImageProps = {
@@ -37,6 +44,30 @@ const Image = styled.img<ImageProps>`
     `linear-gradient(to bottom, ${props.theme.colors.surface1}, ${props.theme.colors.surface2})`};
 `;
 
+const BgImageContainer = styled.div<{
+  height: string;
+  width: string;
+  img: string;
+}>`
+  height: ${(props) => props.height};
+  width: ${(props) => props.width};
+  position: relative;
+
+  &::before {
+    content: "";
+    background-image: url(${(props) => props.img});
+    border-radius: 1ex;
+    background-size: cover;
+    background-position: center;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+    opacity: 0.1;
+  }
+`;
+
 const Figcaption = styled.figcaption`
   line-height: ${(props) => props.theme.size.lg};
   font-weight: 600;
@@ -53,10 +84,12 @@ const Movie = (props: MovieProps) => {
   console.log(data);
   const imageSrc = getImageSrc(data?.poster_path, "poster");
   const [height, width] = getImageHeightAndWidth("2/3", 15);
+  const bgImageSrc = getBackgroundImageSrc(data?.backdrop_path || "");
+  const [bgHeight, bgWidth] = getImageHeightAndWidth("16/9", 22.5);
 
   return (
     <MovieContainer>
-      <div>
+      <ImageContainer>
         <figure>
           <picture>
             <Image
@@ -73,7 +106,19 @@ const Movie = (props: MovieProps) => {
             {getReleaseDate(data?.release_date || Date.now().toString())}
           </Figcaption>
         </figure>
-      </div>
+        {/* <Image
+          aspectRatio="16/9"
+          inlineSize={bgWidth}
+          blockSize={bgHeight}
+          alt={data?.title}
+          loading="lazy"
+          srcSet={bgImageSrc.srcset}
+          src={bgImageSrc.src}
+        /> */}
+        <BgImageContainer height={bgHeight} width={bgWidth} img={bgImageSrc}>
+          {data?.title}
+        </BgImageContainer>
+      </ImageContainer>
     </MovieContainer>
   );
 };

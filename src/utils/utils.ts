@@ -22,6 +22,9 @@ export function getImageSrc(path: string | undefined, type: ImageType) {
   return img;
 }
 
+export const getBackgroundImageSrc = (path: string) =>
+  `${imageBaseURL}w1920_and_h800_face${path}`;
+
 export const getImageHeightAndWidth = (
   ratio: ImageRatio = "1/1",
   size: number = 10

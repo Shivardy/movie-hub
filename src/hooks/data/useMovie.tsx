@@ -7,7 +7,13 @@ import { getUrl } from "../../utils/utils";
 function useMovie(id: number) {
   return useQuery<Movie, number, Movie, ["movie", number]>(
     ["movie", id],
-    () => fetcher(getUrl(`movie/${id}`)),
+    () =>
+      fetcher(
+        getUrl(
+          `movie/${id}`,
+          "&append_to_response=recommendations,videos,credits"
+        )
+      ),
     {
       initialData: () => {
         const queryData = queryClient.getQueriesData<{
@@ -18,6 +24,8 @@ function useMovie(id: number) {
           .map(([key, data]) => data)
           .filter((data) => data !== undefined)
           .flatMap((data) => data.results);
+
+        console.log(movies);
 
         const movie = movies.find((data) => data.id === id);
         return movie as Movie;
