@@ -1,12 +1,14 @@
 import { useQuery } from "react-query";
+import { queryClient } from "../../App";
 import { fetcher } from "../../services/api";
 import { Media, MediaType } from "../../types/common";
 import { TrendingMovies } from "../../types/Movies";
 import { TrendingTv } from "../../types/Tv";
+import { queryKeys } from "../../utils/constants";
 import {
-  getMoviesFromApiResult,
   getTVsFromApiResult,
   getUrl,
+  updateCacheData,
 } from "../../utils/utils";
 
 function useTrending(type: MediaType) {
@@ -18,8 +20,14 @@ function useTrending(type: MediaType) {
   >([type, "trending"], () => fetcher(getUrl(`trending/${type}/day`)), {
     select: (data) => {
       return type === MediaType.Movie
-        ? getMoviesFromApiResult((data as TrendingMovies).results)
+        ? (data as TrendingMovies).results
         : getTVsFromApiResult((data as TrendingTv).results);
+    },
+    onSuccess: (data) => {
+      queryClient.setQueryData<Media[]>(
+        type === MediaType.Movie ? queryKeys.movies : queryKeys.tvs,
+        updateCacheData(data)
+      );
     },
   });
 }

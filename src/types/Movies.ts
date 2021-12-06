@@ -1,4 +1,4 @@
-import { Genre } from "./common";
+import { Genre, MediaType } from "./common";
 
 export interface PopularMovies {
   page: number;
@@ -60,7 +60,7 @@ export interface Movie {
   homepage: string;
   id: number;
   imdb_id: string;
-  original_language: string;
+  original_language: OriginalLanguage;
   original_title: string;
   overview: string;
   popularity: number;
@@ -77,8 +77,75 @@ export interface Movie {
   video: boolean;
   vote_average: number;
   vote_count: number;
+  recommendations: Recommendations;
+  videos: Videos;
+  credits: Credits;
+}
+export interface Recommendations {
+  page: number;
+  results: RecommendationsResult[];
+  total_pages: number;
+  total_results: number;
+}
+export interface RecommendationsResult {
+  adult: boolean;
+  backdrop_path: string;
+  genre_ids: number[];
+  id: number;
+  media_type: MediaType;
+  title: string;
+  original_language: OriginalLanguage;
+  original_title: string;
+  overview: string;
+  popularity: number;
+  poster_path: string;
+  release_date: string;
+  video: boolean;
+  vote_average: number;
+  vote_count: number;
 }
 
+export interface Videos {
+  results: VideosResult[];
+}
+
+export interface VideosResult {
+  iso_639_1: OriginalLanguage;
+  iso_3166_1: string;
+  name: string;
+  key: string;
+  site: string;
+  size: number;
+  type: string;
+  official: boolean;
+  published_at: string;
+  id: string;
+}
+export type OriginalLanguage = {
+  [key: string]: string;
+};
+
+export interface Credits {
+  cast: Cast[];
+  crew: Cast[];
+}
+
+export interface Cast {
+  adult: boolean;
+  gender: number;
+  id: number;
+  known_for_department: string;
+  name: string;
+  original_name: string;
+  popularity: number;
+  profile_path: null | string;
+  cast_id?: number;
+  character?: string;
+  credit_id: string;
+  order?: number;
+  department?: string;
+  job?: string;
+}
 export interface ProductionCompany {
   id: number;
   logo_path: null | string;

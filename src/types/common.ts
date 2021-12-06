@@ -16,6 +16,7 @@ export type Media = {
 export enum MediaType {
   Movie = "movie",
   Tv = "tv",
+  Person = "person",
 }
 
 export enum MovieType {

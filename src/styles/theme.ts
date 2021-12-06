@@ -16,7 +16,6 @@ export const getTheme = (isDarkMode = false) => {
     surface3: `hsl(${hue} 20% 92%)`,
     surface4: `hsl(${hue} 20% 85%)`,
     surfaceShadow: `hsl(${hue} 10% 20%)`,
-    shadowStrength: "0.02",
   };
 
   const dark = {
@@ -28,7 +27,6 @@ export const getTheme = (isDarkMode = false) => {
     surface3: `hsl(${hue} 5% 20%)`,
     surface4: `hsl(${hue} 5% 25%)`,
     surfaceShadow: `hsl(${hue} 50% 3%)`,
-    shadowStrength: "0.8",
   };
 
   function sizeStepUp(n: number, up = true): string {
@@ -40,9 +38,9 @@ export const getTheme = (isDarkMode = false) => {
     }
     return `calc(1rem * ${result})`;
   }
-
+  const colors = isDarkMode ? dark : light;
   return {
-    colors: isDarkMode ? dark : light,
+    colors,
     size: {
       xxxs: sizeStepUp(5, false),
       xxs: sizeStepUp(4, false),
@@ -58,6 +56,12 @@ export const getTheme = (isDarkMode = false) => {
       below1400: "only screen and (max-width: 1400px)",
       below768: "only screen and (max-width: 768px)",
       below375: "only screen and (max-width: 375px)",
+    },
+    getColorWithOpacity: (color: keyof typeof colors, opacity: number) => {
+      const colorStr = colors[color];
+      const [hue, saturation, lightness] =
+        colorStr.match(/\d+/g)?.map(Number) ?? [];
+      return `hsla(${hue}, ${saturation}%, ${lightness}%, ${opacity})`;
     },
   };
 };

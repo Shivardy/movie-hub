@@ -1,12 +1,14 @@
 import { useQuery } from "react-query";
+import { queryClient } from "../../App";
 import { fetcher } from "../../services/api";
 import { Media, MediaType } from "../../types/common";
 import { GenreMovies } from "../../types/Movies";
 import { GenreTv } from "../../types/Tv";
+import { queryKeys } from "../../utils/constants";
 import {
-  getMoviesFromApiResult,
   getTVsFromApiResult,
   getUrl,
+  updateCacheData,
 } from "../../utils/utils";
 
 function useContentByGenre(type: MediaType, genreId: number, enabled = false) {
@@ -21,8 +23,14 @@ function useContentByGenre(type: MediaType, genreId: number, enabled = false) {
     {
       select: (data) => {
         return type === MediaType.Movie
-          ? getMoviesFromApiResult((data as GenreMovies).results)
+          ? (data as GenreMovies).results
           : getTVsFromApiResult((data as GenreTv).results);
+      },
+      onSuccess: (data) => {
+        queryClient.setQueryData(
+          type === MediaType.Movie ? queryKeys.movies : queryKeys.tvs,
+          updateCacheData(data)
+        );
       },
       enabled,
     }

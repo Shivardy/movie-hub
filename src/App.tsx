@@ -35,6 +35,7 @@ function App() {
             <ReactQueryDevtools />
             <Router>
               <Home path="/" />
+              <Home path="/movie-hub" />
               <Movie path="/movie/:movieId" />
             </Router>
           </QueryClientProvider>

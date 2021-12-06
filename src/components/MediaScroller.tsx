@@ -1,6 +1,4 @@
-import { Link } from "@reach/router";
 import { useCallback, useRef, useState } from "react";
-import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 import ArrowLeft from "../icons/ArrowLeft";
 import ArrowRight from "../icons/ArrowRight";
@@ -10,6 +8,7 @@ import {
   getImageHeightAndWidth,
   isTouchScreen,
 } from "../utils/utils";
+import MediaListItem from "./MediaListItem";
 
 const Div = styled.div`
   position: relative;
@@ -85,56 +84,6 @@ const MediaItem = styled.li<MediaItemProps>`
   block-size: min-content;
 `;
 
-const Figure = styled.figure`
-  scroll-snap-align: start;
-
-  display: grid;
-  gap: calc(${(props) => props.theme.size.lg} / 2);
-  margin: 0;
-
-  cursor: pointer;
-  user-select: none;
-
-  outline-offset: 12px;
-
-  &:focus {
-    outline-offset: 7px;
-  }
-`;
-
-type ImageProps = {
-  aspectRatio: Exclude<MediaScrollerProps["ratio"], typeof undefined>;
-  inlineSize: string;
-  blockSize: string;
-};
-const Image = styled.img<ImageProps>`
-  inline-size: ${(props) => props.inlineSize};
-  block-size: ${(props) => props.blockSize};
-
-  aspect-ratio: ${(props) => props.aspectRatio};
-
-  object-fit: cover;
-
-  border-radius: 1ex;
-  border: none;
-  overflow: hidden;
-  background-image: ${(props) =>
-    `linear-gradient(to bottom, ${props.theme.colors.surface1}, ${props.theme.colors.surface2})`};
-`;
-
-const Figcaption = styled.figcaption`
-  line-height: ${(props) => props.theme.size.lg};
-  font-weight: 600;
-  font-size: ${(props) => props.theme.size.md};
-
-  & > p {
-    font-size: ${(props) => props.theme.size.sm};
-    font-weight: 400;
-    color: ${(props) => props.theme.colors.text2};
-    padding-block: ${(props) => props.theme.size.sm};
-  }
-`;
-
 type ListItemType = {
   id: number;
   image: {
@@ -182,6 +131,7 @@ const MediaScroller = ({
   }, []);
 
   const handleScroll = useCallback(() => {
+    if (!mediaList.current) return;
     const { offsetWidth, scrollLeft, scrollWidth } = mediaList.current;
 
     if (offsetWidth + scrollLeft >= scrollWidth) {
@@ -223,14 +173,14 @@ const MediaScroller = ({
       )}
       <MediaScrollerUL ref={mediaList} onScroll={debounce(handleScroll)}>
         {data.map((item, index) => (
-          <ListItem
-            key={item.id || index}
-            item={item}
-            width={width}
-            height={height}
-            ratio={ratio}
-            mediaType={mediaType}
-          />
+          <MediaItem inlineSize={width} key={item.id || index}>
+            <MediaListItem
+              key={item.id || index}
+              item={item}
+              ratio={ratio}
+              mediaType={mediaType}
+            />
+          </MediaItem>
         ))}
       </MediaScrollerUL>
     </Div>
@@ -238,44 +188,3 @@ const MediaScroller = ({
 };
 
 export default MediaScroller;
-
-type ListItemProps = {
-  item: ListItemType;
-  width: string;
-  height: string;
-  ratio: Exclude<MediaScrollerProps["ratio"], undefined>;
-  mediaType: MediaType;
-};
-
-const ListItem = ({ height, item, width, ratio, mediaType }: ListItemProps) => (
-  <MediaItem inlineSize={width}>
-    <Link to={`/${mediaType}/${item.id}`}>
-      <Figure>
-        <picture>
-          {item.image.src ? (
-            <Image
-              aspectRatio={ratio}
-              inlineSize={width}
-              blockSize={height}
-              alt={item.title}
-              loading="lazy"
-              srcSet={item.image.srcset}
-              src={item.image.src}
-            />
-          ) : (
-            <Skeleton width={width} height={height} />
-          )}
-        </picture>
-        <Figcaption>
-          {item.title || (
-            <>
-              <Skeleton />
-              <Skeleton width="65%" />
-            </>
-          )}
-          {item.caption && <p>{item.caption}</p>}
-        </Figcaption>
-      </Figure>
-    </Link>
-  </MediaItem>
-);

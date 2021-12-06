@@ -1,5 +1,4 @@
 import { ImageRatio, ImageType, Media } from "../types/common";
-import { MovieResult } from "../types/Movies";
 import { TVResult } from "../types/Tv";
 import { ImageSize } from "./constants";
 import environment from "./environment";
@@ -9,7 +8,7 @@ const { apiKey, baseURL, imageBaseURL } = environment;
 export const getUrl = (path: string, queryString = ""): string =>
   `${baseURL}${path}?api_key=${apiKey}${queryString}`;
 
-export function getImageSrc(path: string | undefined, type: ImageType) {
+export function getImageSrc(path: string | undefined | null, type: ImageType) {
   const img = { src: "", srcset: "" };
   if (path) {
     img.src = `${imageBaseURL}original${path}`;
@@ -51,45 +50,33 @@ export const getReleaseDate = (release_date: string) =>
     day: "numeric",
   });
 
-export const getMoviesFromApiResult = (results: MovieResult[]): Media[] => {
-  const movies = results.map(
-    ({
-      title,
-      id,
-      backdrop_path,
-      poster_path,
-      vote_average,
-      release_date,
-    }) => ({
-      title,
-      id,
-      backdrop_path,
-      poster_path,
-      vote_average,
-      release_date,
-    })
-  );
-  return movies;
-};
+export function minuteToTime(duration: number) {
+  const hours = duration / 60;
+  const rhours = Math.floor(hours);
+  var minutes = (hours - rhours) * 60;
+  var rminutes = Math.round(minutes);
+  return `${rhours}h ${rminutes}m`;
+}
+
+export function updateCacheData<T extends { id: number }>(data: T[]) {
+  return (oldData: T[] = []) => {
+    const allData = [...oldData, ...data];
+    const uniqueIds = Array.from(new Set(allData.map((a) => a.id)));
+    const result: T[] = [];
+    uniqueIds.forEach((id) => {
+      const movie = allData.find((m) => m.id === id);
+      if (movie) result.push(movie);
+    });
+    return result;
+  };
+}
 
 export const getTVsFromApiResult = (results: TVResult[]): Media[] => {
-  const tvs = results.map(
-    ({
-      name,
-      id,
-      backdrop_path,
-      poster_path,
-      vote_average,
-      first_air_date,
-    }) => ({
-      title: name,
-      release_date: first_air_date,
-      id,
-      backdrop_path,
-      poster_path,
-      vote_average,
-    })
-  );
+  const tvs = results.map(({ name, first_air_date, ...rest }) => ({
+    title: name,
+    release_date: first_air_date,
+    ...rest,
+  }));
   return tvs;
 };
 
