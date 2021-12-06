@@ -1,4 +1,12 @@
-import { Genre, MediaType } from "./common";
+import {
+  Credits,
+  Genre,
+  MediaType,
+  OriginalLanguage,
+  ProductionCountry,
+  SpokenLanguage,
+  Videos,
+} from "./common";
 
 export interface PopularMovies {
   page: number;
@@ -105,61 +113,9 @@ export interface RecommendationsResult {
   vote_count: number;
 }
 
-export interface Videos {
-  results: VideosResult[];
-}
-
-export interface VideosResult {
-  iso_639_1: OriginalLanguage;
-  iso_3166_1: string;
-  name: string;
-  key: string;
-  site: string;
-  size: number;
-  type: string;
-  official: boolean;
-  published_at: string;
-  id: string;
-}
-export type OriginalLanguage = {
-  [key: string]: string;
-};
-
-export interface Credits {
-  cast: Cast[];
-  crew: Cast[];
-}
-
-export interface Cast {
-  adult: boolean;
-  gender: number;
-  id: number;
-  known_for_department: string;
-  name: string;
-  original_name: string;
-  popularity: number;
-  profile_path: null | string;
-  cast_id?: number;
-  character?: string;
-  credit_id: string;
-  order?: number;
-  department?: string;
-  job?: string;
-}
 export interface ProductionCompany {
   id: number;
   logo_path: null | string;
   name: string;
   origin_country: string;
-}
-
-export interface ProductionCountry {
-  iso_3166_1: string;
-  name: string;
-}
-
-export interface SpokenLanguage {
-  english_name: string;
-  iso_639_1: string;
-  name: string;
 }

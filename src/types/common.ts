@@ -36,3 +36,57 @@ export type State = {};
 export interface AppContext extends State {
   dispatch: React.Dispatch<any>;
 }
+
+export interface Credits {
+  cast: Cast[];
+  crew: Cast[];
+}
+
+interface Cast {
+  adult: boolean;
+  gender: number;
+  id: number;
+  known_for_department: string;
+  name: string;
+  original_name: string;
+  popularity: number;
+  profile_path: null | string;
+  cast_id?: number;
+  character?: string;
+  credit_id: string;
+  order?: number;
+  department?: string;
+  job?: string;
+}
+
+export type OriginalLanguage = {
+  [key: string]: string;
+};
+
+export interface ProductionCountry {
+  iso_3166_1: string;
+  name: string;
+}
+
+export interface SpokenLanguage {
+  english_name: string;
+  iso_639_1: string;
+  name: string;
+}
+
+export interface Videos {
+  results: VideosResult[];
+}
+
+interface VideosResult {
+  iso_639_1: OriginalLanguage;
+  iso_3166_1: string;
+  name: string;
+  key: string;
+  site: string;
+  size: number;
+  type: string;
+  official: boolean;
+  published_at: string;
+  id: string;
+}

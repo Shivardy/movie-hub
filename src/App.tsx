@@ -8,6 +8,7 @@ import { AppContextProvider } from "./AppContext";
 import useDarkMode from "./hooks/useDarkMode";
 import Home from "./sections/Home";
 import Movie from "./sections/Movie";
+import Tv from "./sections/Tv";
 import { getTheme, GlobalStyles } from "./styles/theme";
 
 export const queryClient = new QueryClient({
@@ -37,6 +38,7 @@ function App() {
               <Home path="/" />
               <Home path="/movie-hub" />
               <Movie path="/movie/:movieId" />
+              <Tv path="/tv/:tvId" />
             </Router>
           </QueryClientProvider>
         </SkeletonTheme>

@@ -11,23 +11,22 @@ import {
   MediaScreenContainer,
   SectionWithBGColor,
 } from "../components/StyledElements";
-import useMovie from "../hooks/data/useMovie";
+import useTv from "../hooks/data/useTv";
 import { MediaType } from "../types/common";
 import {
   getBackgroundImageSrc,
   getImageHeightAndWidth,
   getImageSrc,
   getReleaseDate,
-  minuteToTime,
 } from "../utils/utils";
 
-interface MovieProps extends RouteComponentProps {
-  movieId?: string;
+interface TvProps extends RouteComponentProps {
+  tvId?: string;
 }
 
-const Movie = (props: MovieProps) => {
-  const { movieId } = useParams();
-  const { data, isLoading } = useMovie(parseInt(movieId));
+const Tv = (props: TvProps) => {
+  const { tvId } = useParams();
+  const { data, isLoading } = useTv(parseInt(tvId));
   console.log(data);
   const imageSrc = getImageSrc(data?.poster_path, "poster");
   const [height, width] = getImageHeightAndWidth("2/3", 20);
@@ -45,11 +44,11 @@ const Movie = (props: MovieProps) => {
   }));
   const recommendationsList = recommendations
     .slice(0, 12)
-    .map(({ id, title, backdrop_path, release_date }) => ({
+    .map(({ id, name, backdrop_path, first_air_date }) => ({
       id,
-      title,
+      title: name,
       image: getImageSrc(backdrop_path, "backdrop"),
-      caption: getReleaseDate(release_date),
+      caption: getReleaseDate(first_air_date),
     }));
   const [, recommendationGridItemWidth] = getImageHeightAndWidth("16/9", 7);
 
@@ -63,33 +62,33 @@ const Movie = (props: MovieProps) => {
                 aspectRatio="2/3"
                 inlineSize={width}
                 blockSize={height}
-                alt={data?.title}
+                alt={data?.name}
                 loading="lazy"
                 srcSet={imageSrc.srcset}
                 src={imageSrc.src}
               />
             </picture>
             <figcaption>
-              {getReleaseDate(data?.release_date || Date.now().toString())}
+              {getReleaseDate(data?.first_air_date || Date.now().toString())}
             </figcaption>
           </Figure>
+
           <MediaDescription>
             <div className="mediaHeading">
               <h1>
-                {data?.title}
+                {data?.name}
                 <span>
                   {`(${new Date(
-                    data?.release_date || Date.now()
+                    data?.first_air_date || Date.now()
                   ).getFullYear()})`}
                 </span>
               </h1>
               <div className="mediaFacts">
                 <span>
-                  {getReleaseDate(data?.release_date || Date.now().toString())}
+                  {getReleaseDate(
+                    data?.first_air_date || Date.now().toString()
+                  )}
                 </span>
-                {data?.runtime ? (
-                  <span>{minuteToTime(data?.runtime)}</span>
-                ) : null}
               </div>
             </div>
             {data?.tagline ? <h4>{data.tagline}</h4> : null}
@@ -121,7 +120,6 @@ const Movie = (props: MovieProps) => {
           mediaType={MediaType.Person}
         />
       </SectionWithBGColor>
-
       {recommendationsList.length ? (
         <MediaGridSection
           id="recommendations"
@@ -147,5 +145,4 @@ const Movie = (props: MovieProps) => {
     </>
   );
 };
-
-export default Movie;
+export default Tv;
