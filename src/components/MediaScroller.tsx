@@ -173,13 +173,8 @@ const MediaScroller = ({
       )}
       <MediaScrollerUL ref={mediaList} onScroll={debounce(handleScroll)}>
         {data.map((item, index) => (
-          <MediaItem inlineSize={width} key={item.id || index}>
-            <MediaListItem
-              key={item.id || index}
-              item={item}
-              ratio={ratio}
-              mediaType={mediaType}
-            />
+          <MediaItem inlineSize={width} key={`${item.id}-${index}`}>
+            <MediaListItem item={item} ratio={ratio} mediaType={mediaType} />
           </MediaItem>
         ))}
       </MediaScrollerUL>

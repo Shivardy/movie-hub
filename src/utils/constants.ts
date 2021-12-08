@@ -16,6 +16,7 @@ export const initialState: State = {
 export const queryKeys = {
   movies: "all-movies",
   tvs: "all-tvs",
+  persons: "all-persons",
 };
 
 export const ImageSize = {

@@ -27,8 +27,7 @@ interface MovieProps extends RouteComponentProps {
 
 const Movie = (props: MovieProps) => {
   const { movieId } = useParams();
-  const { data, isLoading } = useMovie(parseInt(movieId));
-  console.log(data);
+  const { data, isFetching } = useMovie(parseInt(movieId));
   const imageSrc = getImageSrc(data?.poster_path, "poster");
   const [height, width] = getImageHeightAndWidth("2/3", 20);
   const bgImageSrc = data?.backdrop_path
@@ -37,12 +36,14 @@ const Movie = (props: MovieProps) => {
 
   const actors = data?.credits?.cast || [];
   const recommendations = data?.recommendations?.results || [];
-  const actorsList = actors.map(({ id, name, character, profile_path }) => ({
-    id,
-    title: name,
-    image: getImageSrc(profile_path, "profile"),
-    caption: character,
-  }));
+  const actorsList = actors
+    .filter(({ profile_path }) => profile_path)
+    .map(({ id, name, character, profile_path }) => ({
+      id,
+      title: name,
+      image: getImageSrc(profile_path, "profile"),
+      caption: character,
+    }));
   const recommendationsList = recommendations
     .slice(0, 12)
     .map(({ id, title, backdrop_path, release_date }) => ({
@@ -117,7 +118,7 @@ const Movie = (props: MovieProps) => {
         <MediaScroller
           list={actorsList}
           ratio="2/3"
-          loading={isLoading}
+          loading={isFetching}
           mediaType={MediaType.Person}
         />
       </SectionWithBGColor>

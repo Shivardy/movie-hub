@@ -126,7 +126,8 @@ export const MediaDescription = styled.div`
       white-space: nowrap;
     }
   }
-  .mediaGenres {
+  .mediaGenres,
+  .mediaSocial {
     display: flex;
     flex-wrap: wrap;
     gap: ${(props) => props.theme.size.sm};

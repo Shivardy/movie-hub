@@ -3,7 +3,7 @@ import { queryClient } from "../../App";
 import { fetcher } from "../../services/api";
 import { Movie } from "../../types/Movies";
 import { queryKeys } from "../../utils/constants";
-import { getUrl } from "../../utils/utils";
+import { getUrl, updateCacheData } from "../../utils/utils";
 
 function useMovie(id: number) {
   return useQuery<Movie, number, Movie, ["movie", number]>(
@@ -22,6 +22,12 @@ function useMovie(id: number) {
         return movie;
       },
       staleTime: 0,
+      onSuccess: (data) => {
+        queryClient.setQueryData<Movie["credits"]["cast"]>(
+          queryKeys.persons,
+          updateCacheData(data.credits.cast)
+        );
+      },
     }
   );
 }

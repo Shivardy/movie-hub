@@ -8,6 +8,7 @@ import { AppContextProvider } from "./AppContext";
 import useDarkMode from "./hooks/useDarkMode";
 import Home from "./sections/Home";
 import Movie from "./sections/Movie";
+import Person from "./sections/Person";
 import Tv from "./sections/Tv";
 import { getTheme, GlobalStyles } from "./styles/theme";
 
@@ -39,6 +40,7 @@ function App() {
               <Home path="/movie-hub" />
               <Movie path="/movie/:movieId" />
               <Tv path="/tv/:tvId" />
+              <Person path="/person/:personId" />
             </Router>
           </QueryClientProvider>
         </SkeletonTheme>

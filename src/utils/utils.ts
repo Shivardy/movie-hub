@@ -50,6 +50,13 @@ export const getReleaseDate = (release_date: string) =>
     day: "numeric",
   });
 
+export function calculate_age(dob: string) {
+  var diff_ms = Date.now() - new Date(dob).getTime();
+  var age_dt = new Date(diff_ms);
+
+  return Math.abs(age_dt.getUTCFullYear() - 1970);
+}
+
 export function minuteToTime(duration: number) {
   const hours = duration / 60;
   const rhours = Math.floor(hours);

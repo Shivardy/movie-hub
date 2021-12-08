@@ -1,8 +1,13 @@
+import styled from "styled-components";
+
+const Svg = styled.svg`
+  fill: ${(props) => props.theme.colors.text1};
+`;
+
 const ArrowRight = () => (
-  <svg
+  <Svg
     xmlns="http://www.w3.org/2000/svg"
     className="h-6 w-6"
-    fill="none"
     viewBox="0 0 24 24"
     stroke="currentColor"
   >
@@ -12,6 +17,6 @@ const ArrowRight = () => (
       strokeWidth={5}
       d="M9 5l7 7-7 7"
     />
-  </svg>
+  </Svg>
 );
 export default ArrowRight;

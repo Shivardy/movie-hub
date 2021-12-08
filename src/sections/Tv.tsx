@@ -26,7 +26,7 @@ interface TvProps extends RouteComponentProps {
 
 const Tv = (props: TvProps) => {
   const { tvId } = useParams();
-  const { data, isLoading } = useTv(parseInt(tvId));
+  const { data, isFetching } = useTv(parseInt(tvId));
   console.log(data);
   const imageSrc = getImageSrc(data?.poster_path, "poster");
   const [height, width] = getImageHeightAndWidth("2/3", 20);
@@ -36,12 +36,14 @@ const Tv = (props: TvProps) => {
 
   const actors = data?.credits?.cast || [];
   const recommendations = data?.recommendations?.results || [];
-  const actorsList = actors.map(({ id, name, character, profile_path }) => ({
-    id,
-    title: name,
-    image: getImageSrc(profile_path, "profile"),
-    caption: character,
-  }));
+  const actorsList = actors
+    .filter(({ profile_path }) => profile_path)
+    .map(({ id, name, character, profile_path }) => ({
+      id,
+      title: name,
+      image: getImageSrc(profile_path, "profile"),
+      caption: character,
+    }));
   const recommendationsList = recommendations
     .slice(0, 12)
     .map(({ id, name, backdrop_path, first_air_date }) => ({
@@ -116,7 +118,7 @@ const Tv = (props: TvProps) => {
         <MediaScroller
           list={actorsList}
           ratio="2/3"
-          loading={isLoading}
+          loading={isFetching}
           mediaType={MediaType.Person}
         />
       </SectionWithBGColor>

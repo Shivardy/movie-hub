@@ -3,7 +3,7 @@ import { queryClient } from "../../App";
 import { fetcher } from "../../services/api";
 import { Tv } from "../../types/Tv";
 import { queryKeys } from "../../utils/constants";
-import { getUrl } from "../../utils/utils";
+import { getUrl, updateCacheData } from "../../utils/utils";
 
 function useTv(id: number) {
   return useQuery<Tv, number, Tv, ["tv", number]>(
@@ -19,6 +19,12 @@ function useTv(id: number) {
         return tv;
       },
       staleTime: 0,
+      onSuccess: (data) => {
+        queryClient.setQueryData<Tv["credits"]["cast"]>(
+          queryKeys.persons,
+          updateCacheData(data.credits.cast)
+        );
+      },
     }
   );
 }
