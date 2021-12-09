@@ -1,5 +1,6 @@
 import { RouteComponentProps, useParams } from "@reach/router";
 import MediaScroller from "../components/MediaScroller";
+import ReadMore from "../components/ReadMore";
 import {
   Figure,
   Header,
@@ -98,6 +99,8 @@ const Person = (props: PersonProps) => {
                 {data?.external_ids.twitter_id ? (
                   <a
                     href={`https://twitter.com/${data?.external_ids.twitter_id}`}
+                    target="_blank"
+                    rel="noreferrer"
                   >
                     <Twitter />
                   </a>
@@ -106,6 +109,8 @@ const Person = (props: PersonProps) => {
                 {data?.external_ids.instagram_id ? (
                   <a
                     href={`https://www.instagram.com/${data?.external_ids.instagram_id}`}
+                    target="_blank"
+                    rel="noreferrer"
                   >
                     <Instagram />
                   </a>
@@ -114,6 +119,8 @@ const Person = (props: PersonProps) => {
                 {data?.external_ids.facebook_id ? (
                   <a
                     href={`https://www.facebook.com/${data?.external_ids.facebook_id}`}
+                    target="_blank"
+                    rel="noreferrer"
                   >
                     <Facebook />
                   </a>
@@ -124,7 +131,7 @@ const Person = (props: PersonProps) => {
             {data?.biography ? (
               <div>
                 <h3>Biography</h3>
-                <p>{data?.biography}</p>
+                <ReadMore text={data?.biography} />
               </div>
             ) : null}
           </MediaDescription>

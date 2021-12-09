@@ -1,6 +1,7 @@
 import { RouteComponentProps, useParams } from "@reach/router";
 import MediaListItem from "../components/MediaListItem";
 import MediaScroller from "../components/MediaScroller";
+import ReadMore from "../components/ReadMore";
 import {
   Figure,
   Header,
@@ -104,10 +105,13 @@ const Movie = (props: MovieProps) => {
               <h3>Status</h3>
               <p>{data?.status}</p>
             </div>
-            <div>
-              <h3>Overview</h3>
-              <p>{data?.overview}</p>
-            </div>
+
+            {data?.overview ? (
+              <div>
+                <h3>Overview</h3>
+                <ReadMore text={data?.overview} />
+              </div>
+            ) : null}
           </MediaDescription>
         </ImageContainer>
       </MediaScreenContainer>
