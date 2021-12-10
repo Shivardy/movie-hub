@@ -1,19 +1,19 @@
 {
   "files": {
-    "main.js": "/movie-hub/static/js/main.3dc5ea5c.chunk.js",
-    "main.js.map": "/movie-hub/static/js/main.3dc5ea5c.chunk.js.map",
+    "main.js": "/movie-hub/static/js/main.7cc00ad3.chunk.js",
+    "main.js.map": "/movie-hub/static/js/main.7cc00ad3.chunk.js.map",
     "runtime-main.js": "/movie-hub/static/js/runtime-main.4e067501.js",
     "runtime-main.js.map": "/movie-hub/static/js/runtime-main.4e067501.js.map",
-    "static/js/2.89e61833.chunk.js": "/movie-hub/static/js/2.89e61833.chunk.js",
-    "static/js/2.89e61833.chunk.js.map": "/movie-hub/static/js/2.89e61833.chunk.js.map",
+    "static/js/2.0c617931.chunk.js": "/movie-hub/static/js/2.0c617931.chunk.js",
+    "static/js/2.0c617931.chunk.js.map": "/movie-hub/static/js/2.0c617931.chunk.js.map",
     "static/js/3.fd912499.chunk.js": "/movie-hub/static/js/3.fd912499.chunk.js",
     "static/js/3.fd912499.chunk.js.map": "/movie-hub/static/js/3.fd912499.chunk.js.map",
     "index.html": "/movie-hub/index.html",
-    "static/js/2.89e61833.chunk.js.LICENSE.txt": "/movie-hub/static/js/2.89e61833.chunk.js.LICENSE.txt"
+    "static/js/2.0c617931.chunk.js.LICENSE.txt": "/movie-hub/static/js/2.0c617931.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.4e067501.js",
-    "static/js/2.89e61833.chunk.js",
-    "static/js/main.3dc5ea5c.chunk.js"
+    "static/js/2.0c617931.chunk.js",
+    "static/js/main.7cc00ad3.chunk.js"
   ]
 }
