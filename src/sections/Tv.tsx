@@ -94,7 +94,7 @@ const Tv = (props: TvProps) => {
                     <YoutubeTrailer
                       youtubeKey={trailer.key}
                       onClose={toggleIsModalOpen}
-                      name={trailer.name}
+                      name={data?.name || ""}
                     />
                   </Modal>
                 </>
