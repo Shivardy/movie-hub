@@ -85,7 +85,7 @@ const MediaListItem = ({
 
   return (
     <div style={{ width }}>
-      <Link to={`/${mediaType}/${item.id}`}>
+      <Link to={`${process.env.PUBLIC_URL}/${mediaType}/${item.id}`}>
         <Figure>
           <picture>
             {item.image.src ? (

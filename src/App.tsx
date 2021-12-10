@@ -35,9 +35,8 @@ function App() {
         >
           <QueryClientProvider client={queryClient}>
             <ReactQueryDevtools />
-            <Router>
+            <Router basepath={process.env.PUBLIC_URL}>
               <Home path="/" />
-              <Home path="/movie-hub" />
               <Movie path="/movie/:movieId" />
               <Tv path="/tv/:tvId" />
               <Person path="/person/:personId" />
