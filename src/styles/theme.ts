@@ -15,7 +15,6 @@ export const getTheme = (isDarkMode = false) => {
     surface2: `hsl(${hue} 20% 99%)`,
     surface3: `hsl(${hue} 20% 92%)`,
     surface4: `hsl(${hue} 20% 85%)`,
-    surfaceShadow: `hsl(${hue} 10% 20%)`,
   };
 
   const dark = {
@@ -26,7 +25,6 @@ export const getTheme = (isDarkMode = false) => {
     surface2: `hsl(${hue} 10% 15%)`,
     surface3: `hsl(${hue} 5% 20%)`,
     surface4: `hsl(${hue} 5% 25%)`,
-    surfaceShadow: `hsl(${hue} 50% 3%)`,
   };
 
   function sizeStepUp(n: number, up = true): string {

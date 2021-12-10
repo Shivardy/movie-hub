@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { ImageRatio } from "../types/common";
+import Button from "./Button";
 
 export const Header = styled.header`
   display: grid;
@@ -70,7 +71,7 @@ export const Figure = styled.figure`
 
   & > figcaption {
     line-height: ${(props) => props.theme.size.lg};
-    padding: ${(props) => props.theme.size.xs};
+    padding-block-end: ${(props) => props.theme.size.xs};
     text-align: center;
     padding-top: 0;
     width: 100%;
@@ -83,6 +84,7 @@ type ImageProps = {
   aspectRatio: ImageRatio;
   inlineSize: string;
   blockSize: string;
+  showPointer?: boolean;
 };
 
 export const Image = styled.img<ImageProps>`
@@ -90,7 +92,7 @@ export const Image = styled.img<ImageProps>`
   block-size: ${(props) => props.blockSize};
 
   aspect-ratio: ${(props) => props.aspectRatio};
-
+  cursor: ${(props) => (props.showPointer ? "pointer" : "initial")};
   object-fit: cover;
 
   border-top-right-radius: 1ex;
@@ -158,5 +160,21 @@ export const MediaGridSection = styled.section<{ gridItemSize: string }>`
     & > div {
       justify-self: center;
     }
+  }
+`;
+
+export const TrailerButton = styled(Button)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  color: ${(props) => props.theme.colors.text1};
+  font-size: ${(props) => props.theme.size.md};
+  border: none;
+
+  & > svg {
+    margin-inline: ${(props) => props.theme.size.xs};
   }
 `;

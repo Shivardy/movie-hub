@@ -1,6 +1,8 @@
 import { RouteComponentProps, useParams } from "@reach/router";
+import { useCallback, useState } from "react";
 import MediaListItem from "../components/MediaListItem";
 import MediaScroller from "../components/MediaScroller";
+import Modal from "../components/Modal";
 import ReadMore from "../components/ReadMore";
 import {
   Figure,
@@ -11,8 +13,11 @@ import {
   MediaGridSection,
   MediaScreenContainer,
   SectionWithBGColor,
+  TrailerButton,
 } from "../components/StyledElements";
+import YoutubeTrailer from "../components/YoutubeTrailer";
 import useMovie from "../hooks/data/useMovie";
+import Youtube from "../icons/Youtube";
 import { MediaType } from "../types/common";
 import {
   getBackgroundImageSrc,
@@ -55,6 +60,13 @@ const Movie = (props: MovieProps) => {
     }));
   const [, recommendationGridItemWidth] = getImageHeightAndWidth("16/9", 7);
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const toggleIsModalOpen = useCallback(
+    () => setIsModalOpen(!isModalOpen),
+    [isModalOpen]
+  );
+  const trailer = data?.videos?.results?.find(({ type }) => type === "Trailer");
   return (
     <>
       <MediaScreenContainer>
@@ -69,10 +81,27 @@ const Movie = (props: MovieProps) => {
                 loading="lazy"
                 srcSet={imageSrc.srcset}
                 src={imageSrc.src}
+                showPointer={!!trailer}
+                onClick={trailer && toggleIsModalOpen}
               />
             </picture>
             <figcaption>
-              {getReleaseDate(data?.release_date || Date.now().toString())}
+              {trailer ? (
+                <>
+                  <TrailerButton className="btn" onClick={toggleIsModalOpen}>
+                    <Youtube /> Watch Trailer
+                  </TrailerButton>
+                  <Modal onClose={toggleIsModalOpen} open={isModalOpen}>
+                    <YoutubeTrailer
+                      youtubeKey={trailer.key}
+                      onClose={toggleIsModalOpen}
+                      name={trailer.name}
+                    />
+                  </Modal>
+                </>
+              ) : (
+                getReleaseDate(data?.release_date || Date.now().toString())
+              )}
             </figcaption>
           </Figure>
           <MediaDescription>

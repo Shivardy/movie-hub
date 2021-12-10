@@ -1,6 +1,8 @@
 import { RouteComponentProps, useParams } from "@reach/router";
+import { useCallback, useState } from "react";
 import MediaListItem from "../components/MediaListItem";
 import MediaScroller from "../components/MediaScroller";
+import Modal from "../components/Modal";
 import ReadMore from "../components/ReadMore";
 import {
   Figure,
@@ -11,8 +13,11 @@ import {
   MediaGridSection,
   MediaScreenContainer,
   SectionWithBGColor,
+  TrailerButton,
 } from "../components/StyledElements";
+import YoutubeTrailer from "../components/YoutubeTrailer";
 import useTv from "../hooks/data/useTv";
+import Youtube from "../icons/Youtube";
 import { MediaType } from "../types/common";
 import {
   getBackgroundImageSrc,
@@ -54,6 +59,13 @@ const Tv = (props: TvProps) => {
       caption: getReleaseDate(first_air_date),
     }));
   const [, recommendationGridItemWidth] = getImageHeightAndWidth("16/9", 7);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const toggleIsModalOpen = useCallback(
+    () => setIsModalOpen(!isModalOpen),
+    [isModalOpen]
+  );
+  const trailer = data?.videos?.results?.find(({ type }) => type === "Trailer");
 
   return (
     <>
@@ -69,10 +81,27 @@ const Tv = (props: TvProps) => {
                 loading="lazy"
                 srcSet={imageSrc.srcset}
                 src={imageSrc.src}
+                showPointer={!!trailer}
+                onClick={trailer && toggleIsModalOpen}
               />
             </picture>
             <figcaption>
-              {getReleaseDate(data?.first_air_date || Date.now().toString())}
+              {trailer ? (
+                <>
+                  <TrailerButton className="btn" onClick={toggleIsModalOpen}>
+                    <Youtube /> Watch Trailer
+                  </TrailerButton>
+                  <Modal onClose={toggleIsModalOpen} open={isModalOpen}>
+                    <YoutubeTrailer
+                      youtubeKey={trailer.key}
+                      onClose={toggleIsModalOpen}
+                      name={trailer.name}
+                    />
+                  </Modal>
+                </>
+              ) : (
+                getReleaseDate(data?.first_air_date || Date.now().toString())
+              )}
             </figcaption>
           </Figure>
 
@@ -140,7 +169,7 @@ const Tv = (props: TvProps) => {
                 key={item.id || index}
                 item={item}
                 ratio="16/9"
-                mediaType={MediaType.Movie}
+                mediaType={MediaType.Tv}
                 size={7}
               />
             ))}

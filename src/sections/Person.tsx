@@ -29,7 +29,6 @@ interface PersonProps extends RouteComponentProps {
 const Person = (props: PersonProps) => {
   const { personId } = useParams();
   const { data, isFetching } = usePerson(parseInt(personId));
-  console.log(data);
   const imageSrc = getImageSrc(data?.profile_path, "profile");
   const [height, width] = getImageHeightAndWidth("2/3", 20);
 
