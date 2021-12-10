@@ -33,7 +33,6 @@ interface TvProps extends RouteComponentProps {
 const Tv = (props: TvProps) => {
   const { tvId } = useParams();
   const { data, isFetching } = useTv(parseInt(tvId));
-  console.log(data);
   const imageSrc = getImageSrc(data?.poster_path, "poster");
   const [height, width] = getImageHeightAndWidth("2/3", 20);
   const bgImageSrc = data?.backdrop_path
