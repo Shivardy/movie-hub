@@ -14,6 +14,7 @@ const IframeHeader = styled.div`
   align-items: center;
   background: black;
   padding: ${(props) => props.theme.size.sm};
+  color: white;
 
   & > span {
     cursor: pointer;

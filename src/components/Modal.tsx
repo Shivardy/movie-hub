@@ -1,10 +1,4 @@
-import {
-  KeyboardEventHandler,
-  ReactNode,
-  useCallback,
-  useEffect,
-  useRef,
-} from "react";
+import { ReactNode, useCallback, useEffect, useRef } from "react";
 import styled from "styled-components";
 
 const Backdrop = styled.div`

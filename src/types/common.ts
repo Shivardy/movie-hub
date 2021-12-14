@@ -35,6 +35,8 @@ export type State = {};
 
 export interface AppContext extends State {
   dispatch: React.Dispatch<any>;
+  isDarkMode: boolean;
+  setIsDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export interface Credits {

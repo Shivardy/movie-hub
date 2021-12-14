@@ -1,13 +1,12 @@
 import { Router } from "@reach/router";
-import React from "react";
 import { SkeletonTheme } from "react-loading-skeleton";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import { ThemeProvider } from "styled-components";
-import { AppContextProvider } from "./AppContext";
-import useDarkMode from "./hooks/useDarkMode";
+import { appContext } from "./AppContext";
 import Home from "./sections/Home";
 import Movie from "./sections/Movie";
+import NavBar from "./sections/NavBar";
 import Person from "./sections/Person";
 import Tv from "./sections/Tv";
 import { getTheme, GlobalStyles } from "./styles/theme";
@@ -22,28 +21,27 @@ export const queryClient = new QueryClient({
 });
 
 function App() {
-  const isDarkMode = useDarkMode();
+  const { isDarkMode } = appContext();
   const theme = getTheme(isDarkMode);
 
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyles />
-      <AppContextProvider>
-        <SkeletonTheme
-          color={theme.colors.surface2}
-          highlightColor={theme.colors.surface1}
-        >
-          <QueryClientProvider client={queryClient}>
-            <ReactQueryDevtools />
-            <Router basepath={process.env.PUBLIC_URL}>
-              <Home path="/" />
-              <Movie path="/movie/:movieId" />
-              <Tv path="/tv/:tvId" />
-              <Person path="/person/:personId" />
-            </Router>
-          </QueryClientProvider>
-        </SkeletonTheme>
-      </AppContextProvider>
+      <SkeletonTheme
+        color={theme.colors.surface2}
+        highlightColor={theme.colors.surface1}
+      >
+        <QueryClientProvider client={queryClient}>
+          <ReactQueryDevtools />
+          <NavBar />
+          <Router basepath={process.env.PUBLIC_URL} primary={false}>
+            <Home path="/" />
+            <Movie path="/movie/:movieId" />
+            <Tv path="/tv/:tvId" />
+            <Person path="/person/:personId" />
+          </Router>
+        </QueryClientProvider>
+      </SkeletonTheme>
     </ThemeProvider>
   );
 }
