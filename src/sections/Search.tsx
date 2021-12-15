@@ -21,7 +21,7 @@ const SearchBarContainer = styled.div`
   input {
     all: unset;
     font-weight: 600;
-    width: clamp(50%, calc(${(props) => props.theme.size.xxxl} * 10), 90%);
+    width: clamp(50%, calc(${(props) => props.theme.size.xxxl} * 10), 80%);
   }
 
   & > svg:nth-of-type(1) {
