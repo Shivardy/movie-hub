@@ -13,10 +13,10 @@ export const AppContextProvider = ({
   children: React.ReactNode;
 }) => {
   const [state, dispatch] = useReducer(appReducer, initialState);
-  const [isDarkMode, setIsDarkMode] = useDarkMode();
+  const { isDarkMode, toggleDarkMode } = useDarkMode();
 
   return (
-    <AppProvider value={{ ...state, dispatch, isDarkMode, setIsDarkMode }}>
+    <AppProvider value={{ ...state, dispatch, isDarkMode, toggleDarkMode }}>
       {children}
     </AppProvider>
   );

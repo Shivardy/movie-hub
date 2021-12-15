@@ -2,13 +2,13 @@ import { createGlobalStyle } from "styled-components";
 
 export const getTheme = (isDarkMode = false) => {
   /* brand foundation */
-  const hue = "200";
+  const hue = "40";
   const saturation = "100%";
   const lightness = "50%";
 
   /* light */
   const light = {
-    brand: `hsl(${hue} ${saturation} ${lightness}`,
+    brand: `hsl(${hue} ${saturation} ${lightness})`,
     text1: `hsl(${hue} ${saturation} 10%)`,
     text2: `hsl(${hue} 30% 30%)`,
     surface1: `hsl(${hue} 25% 90%)`,

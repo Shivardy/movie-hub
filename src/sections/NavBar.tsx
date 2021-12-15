@@ -1,5 +1,4 @@
 import { Link } from "@reach/router";
-import { useCallback } from "react";
 import styled from "styled-components";
 import { appContext } from "../AppContext";
 import Button from "../components/Button";
@@ -31,6 +30,11 @@ const Nav = styled.nav`
       gap: ${(props) => props.theme.size.xxxs};
       font-size: ${(props) => props.theme.size.lg};
       font-weight: 600;
+
+      span {
+        color: ${(props) => props.theme.colors.brand};
+      }
+
       @media ${({ theme }) => theme.mediaQueries.below768} {
         span {
           display: none;
@@ -60,11 +64,7 @@ const StyledButton = styled(Button)`
 `;
 
 const NavBar = () => {
-  const { isDarkMode, setIsDarkMode } = appContext();
-  const toggleDarkMode = useCallback(
-    () => setIsDarkMode(!isDarkMode),
-    [isDarkMode, setIsDarkMode]
-  );
+  const { isDarkMode, toggleDarkMode } = appContext();
 
   return (
     <Nav>

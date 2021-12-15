@@ -1,19 +1,28 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import useLocalStorage from "./useLocalStorage";
 
-const useDarkMode = (): [
-  boolean,
-  React.Dispatch<React.SetStateAction<boolean>>
-] => {
+const useDarkMode = (): {
+  isDarkMode: boolean;
+  toggleDarkMode: () => void;
+} => {
   const darkModeQuery = window?.matchMedia("(prefers-color-scheme: dark)");
-  const [isDarkMode, setIsDarkMode] = useState(darkModeQuery?.matches);
+  const isDarkModeFromOs = darkModeQuery?.matches;
+  const [isDarkMode, setIsDarkMode] = useLocalStorage(
+    "darkMode",
+    isDarkModeFromOs
+  );
+
   useEffect(() => {
     const darkModeHandler = ({ matches }: MediaQueryListEvent): void =>
       setIsDarkMode(matches);
     darkModeQuery?.addListener(darkModeHandler);
     return () => darkModeQuery.removeEventListener("change", darkModeHandler);
-  }, [darkModeQuery]);
+  }, [darkModeQuery, setIsDarkMode]);
 
-  return [isDarkMode, setIsDarkMode];
+  return {
+    isDarkMode,
+    toggleDarkMode: () => setIsDarkMode((prev) => !prev),
+  } as const;
 };
 
 export default useDarkMode;
