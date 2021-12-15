@@ -8,6 +8,7 @@ import Home from "./sections/Home";
 import Movie from "./sections/Movie";
 import NavBar from "./sections/NavBar";
 import Person from "./sections/Person";
+import Search from "./sections/Search";
 import Tv from "./sections/Tv";
 import { getTheme, GlobalStyles } from "./styles/theme";
 
@@ -34,6 +35,7 @@ function App() {
         <QueryClientProvider client={queryClient}>
           <ReactQueryDevtools />
           <NavBar />
+          <Search />
           <Router basepath={process.env.PUBLIC_URL} primary={false}>
             <Home path="/" />
             <Movie path="/movie/:movieId" />

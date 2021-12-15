@@ -4,15 +4,17 @@ import { appContext } from "../AppContext";
 import Button from "../components/Button";
 import Moon from "../icons/Moon";
 import MovieDB from "../icons/MovieDB";
-import Search from "../icons/Search";
+import SearchIcon from "../icons/SearchIcon";
 import Sun from "../icons/Sun";
 import User from "../icons/User";
 
 const Nav = styled.nav`
   display: flex;
   justify-content: space-between;
-  padding: ${(props) => props.theme.size.lg};
+  padding-inline: ${(props) => props.theme.size.lg};
+  padding-block: ${(props) => props.theme.size.sm};
   background-color: ${(props) => props.theme.colors.surface2};
+  height: calc(${(props) => props.theme.size.xxl} * 2);
 
   .nav-logos {
     display: flex;
@@ -64,7 +66,7 @@ const StyledButton = styled(Button)`
 `;
 
 const NavBar = () => {
-  const { isDarkMode, toggleDarkMode } = appContext();
+  const { isDarkMode, toggleDarkMode, dispatch, displaySearch } = appContext();
 
   return (
     <Nav>
@@ -79,8 +81,12 @@ const NavBar = () => {
         </div>
       </div>
       <div className="nav-logos">
-        <StyledButton onClick={console.log}>
-          <Search />
+        <StyledButton
+          onClick={() =>
+            dispatch({ type: "DISPLAY_SEARCH", payload: !displaySearch })
+          }
+        >
+          <SearchIcon />
         </StyledButton>
         <StyledButton onClick={toggleDarkMode}>
           {isDarkMode ? <Sun /> : <Moon />}

@@ -16,7 +16,7 @@ const Backdrop = styled.div`
 `;
 
 const ModalDiv = styled.div`
-  width: clamp(50%, calc(${(props) => props.theme.size.xxxl} * 15), 90%);
+  width: clamp(50%, calc(${(props) => props.theme.size.xxxl} * 10), 90%);
   height: min(50%);
   border-radius: 1ex;
   display: flex;
