@@ -22,7 +22,7 @@ export const queryClient = new QueryClient({
 });
 
 function App() {
-  const { isDarkMode } = appContext();
+  const { isDarkMode, displaySearch } = appContext();
   const theme = getTheme(isDarkMode);
 
   return (
@@ -35,7 +35,7 @@ function App() {
         <QueryClientProvider client={queryClient}>
           <ReactQueryDevtools />
           <NavBar />
-          <Search />
+          {displaySearch ? <Search /> : null}
           <Router basepath={process.env.PUBLIC_URL} primary={false}>
             <Home path="/" />
             <Movie path="/movie/:movieId" />

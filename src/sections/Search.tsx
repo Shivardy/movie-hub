@@ -21,7 +21,7 @@ const SearchBarContainer = styled.div`
   input {
     all: unset;
     font-weight: 600;
-    width: clamp(50%, calc(${(props) => props.theme.size.xxxl} * 10), 75%);
+    width: clamp(50%, calc(${(props) => props.theme.size.xxxl} * 10), 85%);
   }
 
   & > svg:nth-of-type(1) {
@@ -86,7 +86,7 @@ const Search = () => {
     () => dispatch({ type: "DISPLAY_SEARCH", payload: !displaySearch }),
     [dispatch, displaySearch]
   );
-  return displaySearch ? (
+  return (
     <>
       <SearchBarContainer>
         <SearchIcon />
@@ -107,7 +107,7 @@ const Search = () => {
         </SearchResultContainer>
       </Backdrop>
     </>
-  ) : null;
+  );
 };
 
 export default Search;
