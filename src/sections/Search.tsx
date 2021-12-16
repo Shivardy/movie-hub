@@ -1,9 +1,17 @@
+import { navigate } from "@reach/router";
 import { useCallback, useState } from "react";
 import styled from "styled-components";
 import { appContext } from "../AppContext";
 import Button from "../components/Button";
+import useSearch from "../hooks/data/useSearch";
+import useTrending from "../hooks/data/useTrending";
+import useDebounce from "../hooks/useDebounce";
+import Camera from "../icons/Camera";
 import Close from "../icons/Close";
+import MovieIcon from "../icons/MovieIcon";
+import PersonIcon from "../icons/PersonIcon";
 import SearchIcon from "../icons/SearchIcon";
+import { MediaType } from "../types/common";
 
 const SearchBarContainer = styled.div`
   display: flex;
@@ -14,6 +22,7 @@ const SearchBarContainer = styled.div`
   background-color: ${(props) => props.theme.colors.surface2};
   height: calc(${(props) => props.theme.size.xxl} * 2);
   width: 100%;
+  z-index: 2;
 
   position: fixed;
   top: 0;
@@ -68,24 +77,59 @@ const Backdrop = styled.div`
 const SearchResultContainer = styled.div`
   margin-block-start: ${(props) => props.theme.size.md};
   padding: ${(props) => props.theme.size.sm};
-  width: clamp(56%, calc(${(props) => props.theme.size.xxxl} * 19), 90%);
+  width: clamp(55%, calc(${(props) => props.theme.size.xxxl} * 10), 90%);
   background-color: ${(props) => props.theme.colors.surface2};
-  height: min(50%);
+  height: 70%;
   border-radius: 1ex;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: flex-start;
+  overflow-y: scroll;
+`;
+
+const SearchResultItem = styled.div`
+  padding: ${(props) => props.theme.size.xxxs};
+  width: 100%;
+  display: flex;
+  gap: ${(props) => props.theme.size.sm};
+  cursor: pointer;
+
+  & > svg {
+    width: 5ch;
+    & > path {
+      stroke-width: 1;
+    }
+  }
+
+  .search-item-details {
+    line-height: 1.5rem;
+    & > p {
+      font-weight: 600;
+    }
+    & > span {
+      font-size: ${(props) => props.theme.size.sm};
+      color: ${(props) => props.theme.colors.text2};
+    }
+  }
+
+  &:hover {
+    background-color: ${(props) => props.theme.colors.surface3};
+  }
 `;
 
 const Search = () => {
   const { displaySearch, dispatch } = appContext();
   const [searchValue, setSearchValue] = useState("");
-
+  const debouceSearchValue = useDebounce(searchValue, 150);
+  const { data } = useSearch(debouceSearchValue);
+  const { data: trendingData } = useTrending(MediaType.Movie);
+  console.log(trendingData);
   const closeSearch = useCallback(
     () => dispatch({ type: "DISPLAY_SEARCH", payload: !displaySearch }),
     [dispatch, displaySearch]
   );
+
   return (
     <>
       <SearchBarContainer>
@@ -103,7 +147,39 @@ const Search = () => {
       </SearchBarContainer>
       <Backdrop onClick={closeSearch}>
         <SearchResultContainer onClick={(e) => e.stopPropagation()}>
-          <h1>{searchValue}</h1>
+          {data?.map((item) => (
+            <SearchResultItem
+              key={`${item.media_type}-${item.id}`}
+              onClick={() => {
+                closeSearch();
+                navigate(
+                  `${process.env.PUBLIC_URL}/${item.media_type}/${item.id}`
+                );
+              }}
+            >
+              {item.media_type === MediaType.Movie ? (
+                <MovieIcon />
+              ) : item.media_type === MediaType.Tv ? (
+                <Camera />
+              ) : (
+                <PersonIcon />
+              )}
+              <div className="search-item-details">
+                <p>
+                  {item.media_type === MediaType.Movie ? item.title : item.name}
+                </p>
+                <span>
+                  {`in ${
+                    item.media_type === MediaType.Movie
+                      ? "Movies"
+                      : item.media_type === MediaType.Tv
+                      ? "Tv Shows"
+                      : "People"
+                  }`}
+                </span>
+              </div>
+            </SearchResultItem>
+          ))}
         </SearchResultContainer>
       </Backdrop>
     </>

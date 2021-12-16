@@ -87,9 +87,12 @@ export const getTVsFromApiResult = (results: TVResult[]): Media[] => {
   return tvs;
 };
 
-export function debounce<T extends Function>(fn: T, time = 50) {
+export function debounce<T extends (...args: any[]) => any>(
+  fn: T,
+  time = 50
+): (...args: Parameters<T>) => void {
   let timeout: NodeJS.Timeout;
-  return function (...args: any[]) {
+  return function (...args: Parameters<T>) {
     if (timeout) {
       clearTimeout(timeout);
     }
