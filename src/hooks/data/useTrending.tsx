@@ -1,33 +1,38 @@
 import { useQuery } from "react-query";
 import { queryClient } from "../../App";
 import { fetcher } from "../../services/api";
-import { Media, MediaType } from "../../types/common";
-import { TrendingMovies } from "../../types/Movies";
-import { TrendingTv } from "../../types/Tv";
+import { MediaTypeExcludePerson } from "../../types/common";
+import { MovieResult, TrendingMovies } from "../../types/Movies";
+import { TrendingTv, TVResult } from "../../types/Tv";
 import { queryKeys } from "../../utils/constants";
-import {
-  getTVsFromApiResult,
-  getUrl,
-  updateCacheData,
-} from "../../utils/utils";
+import { getUrl, updateCacheData } from "../../utils/utils";
 
-function useTrending(type: MediaType) {
+type TrendingType<T> = T extends "movie"
+  ? TrendingMovies
+  : T extends "tv"
+  ? TrendingTv
+  : never;
+
+function useTrending<T extends MediaTypeExcludePerson>(type: T) {
   return useQuery<
-    TrendingMovies | TrendingTv,
+    TrendingType<T>,
     string,
-    Media[],
-    [MediaType, "trending"]
+    TrendingType<T>["results"],
+    [MediaTypeExcludePerson, "trending"]
   >([type, "trending"], () => fetcher(getUrl(`trending/${type}/day`)), {
-    select: (data) => {
-      return type === "movie"
-        ? (data as TrendingMovies).results
-        : getTVsFromApiResult((data as TrendingTv).results);
-    },
+    select: (data) => data.results,
     onSuccess: (data) => {
-      queryClient.setQueryData<Media[]>(
-        type === "movie" ? queryKeys.movies : queryKeys.tvs,
-        updateCacheData(data)
-      );
+      if (type === "movie") {
+        queryClient.setQueryData(
+          queryKeys.movies,
+          updateCacheData(data as MovieResult[])
+        );
+      } else if (type === "tv") {
+        queryClient.setQueryData(
+          queryKeys.movies,
+          updateCacheData(data as TVResult[])
+        );
+      }
     },
   });
 }
