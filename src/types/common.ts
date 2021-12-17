@@ -4,15 +4,6 @@ export type ImageType = keyof typeof ImageSize;
 
 export type ImageRatio = "2/3" | "1/1" | "16/9";
 
-export type Media = {
-  title: string;
-  id: number;
-  backdrop_path: string;
-  poster_path: string;
-  vote_average: number;
-  release_date: string;
-};
-
 export type MediaType = "movie" | "tv" | "person";
 export type MediaTypeExcludePerson = Exclude<MediaType, "person">;
 

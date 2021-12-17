@@ -5,7 +5,9 @@ import MediaScroller from "../components/MediaScroller";
 import { ButtonContainer, Header } from "../components/StyledElements";
 import useContentByGenre from "../hooks/data/useContentByGenre";
 import useInView from "../hooks/useInView";
-import { Genre, MediaType } from "../types/common";
+import { Genre, MediaTypeExcludePerson } from "../types/common";
+import { MovieResult } from "../types/Movies";
+import { TVResult } from "../types/Tv";
 import { getImageSrc, getReleaseDate } from "../utils/utils";
 
 const Section = styled.section<{ isBackdrop: boolean }>`
@@ -22,7 +24,8 @@ type GenreSectionProps = { genre: Genre; index: number };
 
 const GenreSection = ({ genre, index }: GenreSectionProps) => {
   const { ref, inView } = useInView({ triggerOnce: true });
-  const [selectedMedia, setSelectedMedia] = useState<MediaType>("movie");
+  const [selectedMedia, setSelectedMedia] =
+    useState<MediaTypeExcludePerson>("movie");
   const isBackdrop = index % 2 === 0;
 
   // conditionally fetch only if the section is in view.
@@ -32,17 +35,22 @@ const GenreSection = ({ genre, index }: GenreSectionProps) => {
     inView
   );
 
-  const mediaScrollerList = data.map(
-    ({ id, title, poster_path, backdrop_path, release_date }) => ({
-      id,
-      title,
-      image: getImageSrc(
-        isBackdrop ? backdrop_path : poster_path,
-        isBackdrop ? "backdrop" : "poster"
-      ),
-      caption: getReleaseDate(release_date),
-    })
-  );
+  const mediaScrollerList = data.map((item) => ({
+    id: item.id,
+    image: getImageSrc(
+      isBackdrop ? item.backdrop_path : item.poster_path,
+      isBackdrop ? "backdrop" : "poster"
+    ),
+    title:
+      selectedMedia === "movie"
+        ? (item as MovieResult).title
+        : (item as TVResult).name,
+    caption: getReleaseDate(
+      selectedMedia === "movie"
+        ? (item as MovieResult).release_date
+        : (item as TVResult).first_air_date
+    ),
+  }));
 
   return (
     <Section ref={ref} isBackdrop={isBackdrop}>

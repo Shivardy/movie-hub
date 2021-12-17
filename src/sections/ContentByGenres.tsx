@@ -5,12 +5,15 @@ import MediaScroller from "../components/MediaScroller";
 import { ButtonContainer, Header } from "../components/StyledElements";
 import useContentByGenre from "../hooks/data/useContentByGenre";
 import useGenres from "../hooks/data/useGenres";
-import { MediaType } from "../types/common";
+import { MediaTypeExcludePerson } from "../types/common";
+import { MovieResult } from "../types/Movies";
+import { TVResult } from "../types/Tv";
 import { getImageSrc, getReleaseDate } from "../utils/utils";
 import GenreSection from "./GenreSection";
 
 const ContentByGenres = () => {
-  const [selectedMedia, setSelectedMedia] = useState<MediaType>("movie");
+  const [selectedMedia, setSelectedMedia] =
+    useState<MediaTypeExcludePerson>("movie");
   const { data, isLoading } = useGenres();
   const { tvGenres = [], movieGenres = [] } = data || {};
   const tvGenresId = tvGenres.map(({ id }) => id);
@@ -41,14 +44,19 @@ const ContentByGenres = () => {
   const { data: genreData = [], isLoading: genreDataIsLoading } =
     useContentByGenre(selectedMedia, selectedButtonId, true);
 
-  const mediaScrollerList = genreData.map(
-    ({ id, title, poster_path, release_date }) => ({
-      id,
-      title,
-      image: getImageSrc(poster_path, "poster"),
-      caption: getReleaseDate(release_date),
-    })
-  );
+  const mediaScrollerList = genreData.map((item) => ({
+    id: item.id,
+    image: getImageSrc(item.poster_path, "poster"),
+    title:
+      selectedMedia === "movie"
+        ? (item as MovieResult).title
+        : (item as TVResult).name,
+    caption: getReleaseDate(
+      selectedMedia === "movie"
+        ? (item as MovieResult).release_date
+        : (item as TVResult).first_air_date
+    ),
+  }));
 
   return (
     <>

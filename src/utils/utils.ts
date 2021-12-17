@@ -1,5 +1,4 @@
-import { ImageRatio, ImageType, Media } from "../types/common";
-import { TVResult } from "../types/Tv";
+import { ImageRatio, ImageType } from "../types/common";
 import { ImageSize } from "./constants";
 import environment from "./environment";
 
@@ -77,15 +76,6 @@ export function updateCacheData<T extends { id: number }>(data: T[]) {
     return result;
   };
 }
-
-export const getTVsFromApiResult = (results: TVResult[]): Media[] => {
-  const tvs = results.map(({ name, first_air_date, ...rest }) => ({
-    title: name,
-    release_date: first_air_date,
-    ...rest,
-  }));
-  return tvs;
-};
 
 export function debounce<T extends (...args: any[]) => any>(
   fn: T,
