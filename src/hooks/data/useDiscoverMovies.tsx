@@ -1,28 +1,27 @@
 import { useQuery } from "react-query";
 import { queryClient } from "../../App";
 import { fetcher } from "../../services/api";
-import { Media, MovieType } from "../../types/common";
+import { MovieType } from "../../types/common";
 import { PopularMovies, UpcomingMovies } from "../../types/Movies";
 import { queryKeys } from "../../utils/constants";
 import { getUrl, updateCacheData } from "../../utils/utils";
 
-function useDiscoverMovies(type: MovieType) {
+type DiscoverMovieType<T> = T extends "upcoming"
+  ? UpcomingMovies
+  : T extends "popular"
+  ? PopularMovies
+  : never;
+
+function useDiscoverMovies<T extends MovieType>(type: T) {
   return useQuery<
-    UpcomingMovies | PopularMovies,
+    DiscoverMovieType<T>,
     string,
-    Media[],
+    DiscoverMovieType<T>["results"],
     ["movie", MovieType]
   >(["movie", type], () => fetcher(getUrl(`movie/${type}`)), {
-    select: (data) => {
-      return type === MovieType.Upcoming
-        ? (data as UpcomingMovies).results
-        : (data as PopularMovies).results;
-    },
+    select: (data) => data.results,
     onSuccess: (data) => {
-      queryClient.setQueryData<Media[]>(
-        queryKeys.movies,
-        updateCacheData(data)
-      );
+      queryClient.setQueryData(queryKeys.movies, updateCacheData(data));
     },
   });
 }

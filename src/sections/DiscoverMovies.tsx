@@ -16,7 +16,7 @@ const Section = styled.section`
 `;
 
 const DiscoverMovies = () => {
-  const [movieType, setMovieType] = useState<MovieType>(MovieType.Popular);
+  const [movieType, setMovieType] = useState<MovieType>("popular");
 
   const { data = [], isLoading } = useDiscoverMovies(movieType);
 
@@ -30,10 +30,7 @@ const DiscoverMovies = () => {
   );
 
   const handleButton = useCallback(
-    () =>
-      setMovieType(
-        movieType === MovieType.Popular ? MovieType.Upcoming : MovieType.Popular
-      ),
+    () => setMovieType(movieType === "popular" ? "upcoming" : "popular"),
     [movieType]
   );
 
@@ -43,15 +40,15 @@ const DiscoverMovies = () => {
         <h1>Discover Movies</h1>
         <ButtonContainer>
           <Button
-            primary={movieType === MovieType.Popular}
-            disabled={movieType === MovieType.Popular}
+            primary={movieType === "popular"}
+            disabled={movieType === "popular"}
             onClick={handleButton}
           >
             Popular
           </Button>
           <Button
-            primary={movieType === MovieType.Upcoming}
-            disabled={movieType === MovieType.Upcoming}
+            primary={movieType === "upcoming"}
+            disabled={movieType === "upcoming"}
             onClick={handleButton}
           >
             Upcoming

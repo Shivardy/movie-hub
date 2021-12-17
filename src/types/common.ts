@@ -16,10 +16,7 @@ export type Media = {
 export type MediaType = "movie" | "tv" | "person";
 export type MediaTypeExcludePerson = Exclude<MediaType, "person">;
 
-export enum MovieType {
-  Popular = "popular",
-  Upcoming = "upcoming",
-}
+export type MovieType = "popular" | "upcoming";
 
 export type Genre = {
   id: number;
