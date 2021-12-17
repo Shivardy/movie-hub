@@ -14,7 +14,6 @@ import usePerson from "../hooks/data/usePerson";
 import Facebook from "../icons/Facebook";
 import Instagram from "../icons/Instagram";
 import Twitter from "../icons/Twitter";
-import { MediaType } from "../types/common";
 import {
   calculate_age,
   getImageHeightAndWidth,
@@ -34,7 +33,7 @@ const Person = (props: PersonProps) => {
 
   const credits = data?.combined_credits?.cast || [];
   const movies = credits
-    .filter(({ media_type }) => media_type === MediaType.Movie)
+    .filter(({ media_type }) => media_type === "movie")
     .map(({ id, title = "", poster_path, release_date }) => ({
       id,
       title,
@@ -43,7 +42,7 @@ const Person = (props: PersonProps) => {
     }));
 
   const tvs = credits
-    .filter(({ media_type }) => media_type === MediaType.Tv)
+    .filter(({ media_type }) => media_type === "tv")
     .map(({ id, name = "", backdrop_path, first_air_date }) => ({
       id,
       title: name,
@@ -145,7 +144,7 @@ const Person = (props: PersonProps) => {
             list={movies}
             ratio="2/3"
             loading={isFetching}
-            mediaType={MediaType.Movie}
+            mediaType={"movie"}
           />
         </SectionWithBGColor>
       ) : null}
@@ -158,7 +157,7 @@ const Person = (props: PersonProps) => {
             list={tvs}
             ratio="16/9"
             loading={isFetching}
-            mediaType={MediaType.Tv}
+            mediaType={"tv"}
           />
         </SectionWithBGColor>
       ) : null}

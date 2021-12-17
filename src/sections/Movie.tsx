@@ -18,7 +18,6 @@ import {
 import YoutubeTrailer from "../components/YoutubeTrailer";
 import useMovie from "../hooks/data/useMovie";
 import Youtube from "../icons/Youtube";
-import { MediaType } from "../types/common";
 import {
   getBackgroundImageSrc,
   getImageHeightAndWidth,
@@ -152,7 +151,7 @@ const Movie = (props: MovieProps) => {
           list={actorsList}
           ratio="2/3"
           loading={isFetching}
-          mediaType={MediaType.Person}
+          mediaType={"person"}
         />
       </SectionWithBGColor>
 
@@ -171,7 +170,7 @@ const Movie = (props: MovieProps) => {
                 key={item.id || index}
                 item={item}
                 ratio="16/9"
-                mediaType={MediaType.Movie}
+                mediaType={"movie"}
                 size={7}
               />
             ))}

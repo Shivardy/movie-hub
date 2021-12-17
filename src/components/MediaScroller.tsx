@@ -105,7 +105,7 @@ const MediaScroller = ({
   list,
   ratio = "1/1",
   loading = false,
-  mediaType = MediaType.Movie,
+  mediaType = "movie",
 }: MediaScrollerProps) => {
   const [height, width] = getImageHeightAndWidth(ratio);
   const mediaList = useRef<HTMLUListElement>(document.createElement("ul"));

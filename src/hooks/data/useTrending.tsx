@@ -19,13 +19,13 @@ function useTrending(type: MediaType) {
     [MediaType, "trending"]
   >([type, "trending"], () => fetcher(getUrl(`trending/${type}/day`)), {
     select: (data) => {
-      return type === MediaType.Movie
+      return type === "movie"
         ? (data as TrendingMovies).results
         : getTVsFromApiResult((data as TrendingTv).results);
     },
     onSuccess: (data) => {
       queryClient.setQueryData<Media[]>(
-        type === MediaType.Movie ? queryKeys.movies : queryKeys.tvs,
+        type === "movie" ? queryKeys.movies : queryKeys.tvs,
         updateCacheData(data)
       );
     },

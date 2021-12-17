@@ -13,11 +13,7 @@ export type Media = {
   release_date: string;
 };
 
-export enum MediaType {
-  Movie = "movie",
-  Tv = "tv",
-  Person = "person",
-}
+export type MediaType = "movie" | "tv" | "person";
 
 export enum MovieType {
   Popular = "popular",

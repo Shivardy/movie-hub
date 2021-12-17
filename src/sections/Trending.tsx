@@ -7,9 +7,7 @@ import { MediaType } from "../types/common";
 import { getImageSrc, getReleaseDate } from "../utils/utils";
 
 const Trending = () => {
-  const [selectedMedia, setSelectedMedia] = useState<MediaType>(
-    MediaType.Movie
-  );
+  const [selectedMedia, setSelectedMedia] = useState<MediaType>("movie");
 
   const { data = [], isLoading } = useTrending(selectedMedia);
 
@@ -23,10 +21,7 @@ const Trending = () => {
   );
 
   const handleButton = useCallback(
-    () =>
-      setSelectedMedia(
-        selectedMedia === MediaType.Movie ? MediaType.Tv : MediaType.Movie
-      ),
+    () => setSelectedMedia(selectedMedia === "movie" ? "tv" : "movie"),
     [selectedMedia]
   );
 
@@ -36,18 +31,18 @@ const Trending = () => {
         <h1>Trending</h1>
         <ButtonContainer>
           <Button
-            primary={selectedMedia === MediaType.Movie}
-            disabled={selectedMedia === MediaType.Movie}
+            primary={selectedMedia === "movie"}
+            disabled={selectedMedia === "movie"}
             onClick={handleButton}
           >
-            {MediaType.Movie}
+            {"movie"}
           </Button>
           <Button
-            primary={selectedMedia === MediaType.Tv}
-            disabled={selectedMedia === MediaType.Tv}
+            primary={selectedMedia === "tv"}
+            disabled={selectedMedia === "tv"}
             onClick={handleButton}
           >
-            {MediaType.Tv}
+            {"tv"}
           </Button>
         </ButtonContainer>
       </Header>
@@ -56,7 +51,7 @@ const Trending = () => {
         list={mediaScrollerList}
         ratio="2/3"
         loading={isLoading}
-        mediaType={selectedMedia}
+        // mediaType={selectedMedia}
       />
     </section>
   );

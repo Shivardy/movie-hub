@@ -10,14 +10,12 @@ import { getImageSrc, getReleaseDate } from "../utils/utils";
 import GenreSection from "./GenreSection";
 
 const ContentByGenres = () => {
-  const [selectedMedia, setSelectedMedia] = useState<MediaType>(
-    MediaType.Movie
-  );
+  const [selectedMedia, setSelectedMedia] = useState<MediaType>("movie");
   const { data, isLoading } = useGenres();
   const { tvGenres = [], movieGenres = [] } = data || {};
   const tvGenresId = tvGenres.map(({ id }) => id);
   const commonGenres = movieGenres.filter(({ id }) => tvGenresId.includes(id));
-  const genres = selectedMedia === MediaType.Movie ? movieGenres : tvGenres;
+  const genres = selectedMedia === "movie" ? movieGenres : tvGenres;
   const [selectedButtonId, setSelectedButtonId] = useState(genres[0]?.id);
 
   const buttonListItems = useMemo(
@@ -63,16 +61,16 @@ const ContentByGenres = () => {
               <h1>Genres</h1>
               <ButtonContainer>
                 <Button
-                  primary={selectedMedia === MediaType.Movie}
-                  onClick={() => setSelectedMedia(MediaType.Movie)}
+                  primary={selectedMedia === "movie"}
+                  onClick={() => setSelectedMedia("movie")}
                 >
-                  {MediaType.Movie}
+                  {"movie"}
                 </Button>
                 <Button
-                  primary={selectedMedia === MediaType.Tv}
-                  onClick={() => setSelectedMedia(MediaType.Tv)}
+                  primary={selectedMedia === "tv"}
+                  onClick={() => setSelectedMedia("tv")}
                 >
-                  {MediaType.Tv}
+                  {"tv"}
                 </Button>
               </ButtonContainer>
             </Header>

@@ -22,9 +22,7 @@ type GenreSectionProps = { genre: Genre; index: number };
 
 const GenreSection = ({ genre, index }: GenreSectionProps) => {
   const { ref, inView } = useInView({ triggerOnce: true });
-  const [selectedMedia, setSelectedMedia] = useState<MediaType>(
-    MediaType.Movie
-  );
+  const [selectedMedia, setSelectedMedia] = useState<MediaType>("movie");
   const isBackdrop = index % 2 === 0;
 
   // conditionally fetch only if the section is in view.
@@ -52,16 +50,16 @@ const GenreSection = ({ genre, index }: GenreSectionProps) => {
         <h1>{genre.name}</h1>
         <ButtonContainer>
           <Button
-            primary={selectedMedia === MediaType.Movie}
-            onClick={() => setSelectedMedia(MediaType.Movie)}
+            primary={selectedMedia === "movie"}
+            onClick={() => setSelectedMedia("movie")}
           >
-            {MediaType.Movie}
+            {"movie"}
           </Button>
           <Button
-            primary={selectedMedia === MediaType.Tv}
-            onClick={() => setSelectedMedia(MediaType.Tv)}
+            primary={selectedMedia === "tv"}
+            onClick={() => setSelectedMedia("tv")}
           >
-            {MediaType.Tv}
+            {"tv"}
           </Button>
         </ButtonContainer>
       </Header>

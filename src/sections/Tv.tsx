@@ -18,7 +18,6 @@ import {
 import YoutubeTrailer from "../components/YoutubeTrailer";
 import useTv from "../hooks/data/useTv";
 import Youtube from "../icons/Youtube";
-import { MediaType } from "../types/common";
 import {
   getBackgroundImageSrc,
   getImageHeightAndWidth,
@@ -150,7 +149,7 @@ const Tv = (props: TvProps) => {
           list={actorsList}
           ratio="2/3"
           loading={isFetching}
-          mediaType={MediaType.Person}
+          mediaType={"person"}
         />
       </SectionWithBGColor>
       {recommendationsList.length ? (
@@ -168,7 +167,7 @@ const Tv = (props: TvProps) => {
                 key={item.id || index}
                 item={item}
                 ratio="16/9"
-                mediaType={MediaType.Tv}
+                mediaType={"tv"}
                 size={7}
               />
             ))}

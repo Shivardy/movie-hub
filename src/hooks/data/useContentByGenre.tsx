@@ -22,13 +22,13 @@ function useContentByGenre(type: MediaType, genreId: number, enabled = false) {
     () => fetcher(getUrl(`discover/${type}`, `&with_genres=${genreId}`)),
     {
       select: (data) => {
-        return type === MediaType.Movie
+        return type === "movie"
           ? (data as GenreMovies).results
           : getTVsFromApiResult((data as GenreTv).results);
       },
       onSuccess: (data) => {
         queryClient.setQueryData(
-          type === MediaType.Movie ? queryKeys.movies : queryKeys.tvs,
+          type === "movie" ? queryKeys.movies : queryKeys.tvs,
           updateCacheData(data)
         );
       },

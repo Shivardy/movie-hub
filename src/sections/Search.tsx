@@ -11,7 +11,6 @@ import Close from "../icons/Close";
 import MovieIcon from "../icons/MovieIcon";
 import PersonIcon from "../icons/PersonIcon";
 import SearchIcon from "../icons/SearchIcon";
-import { MediaType } from "../types/common";
 
 const SearchBarContainer = styled.div`
   display: flex;
@@ -123,7 +122,7 @@ const Search = () => {
   const [searchValue, setSearchValue] = useState("");
   const debouceSearchValue = useDebounce(searchValue, 150);
   const { data } = useSearch(debouceSearchValue);
-  const { data: trendingData } = useTrending(MediaType.Movie);
+  const { data: trendingData } = useTrending("movie");
   console.log(trendingData);
   const closeSearch = useCallback(
     () => dispatch({ type: "DISPLAY_SEARCH", payload: !displaySearch }),
@@ -157,22 +156,20 @@ const Search = () => {
                 );
               }}
             >
-              {item.media_type === MediaType.Movie ? (
+              {item.media_type === "movie" ? (
                 <MovieIcon />
-              ) : item.media_type === MediaType.Tv ? (
+              ) : item.media_type === "tv" ? (
                 <Camera />
               ) : (
                 <PersonIcon />
               )}
               <div className="search-item-details">
-                <p>
-                  {item.media_type === MediaType.Movie ? item.title : item.name}
-                </p>
+                <p>{item.media_type === "movie" ? item.title : item.name}</p>
                 <span>
                   {`in ${
-                    item.media_type === MediaType.Movie
+                    item.media_type === "movie"
                       ? "Movies"
-                      : item.media_type === MediaType.Tv
+                      : item.media_type === "tv"
                       ? "Tv Shows"
                       : "People"
                   }`}
