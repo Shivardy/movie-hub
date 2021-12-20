@@ -8,9 +8,13 @@ import {
   Videos,
 } from "./common";
 
+interface TrendingTvResult extends TVResult {
+  media_type: "tv";
+}
+
 export interface TrendingTv {
   page: number;
-  results: TVResult[];
+  results: TrendingTvResult[];
   total_pages: number;
   total_results: number;
 }
@@ -22,7 +26,7 @@ export interface GenreTv {
   total_results: number;
 }
 
-export interface TVResult {
+interface TVResult {
   first_air_date: string;
   name: string;
   original_name: string;

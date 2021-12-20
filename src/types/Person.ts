@@ -1,4 +1,10 @@
-import { MediaType, OriginalLanguage, OriginCountry } from "./common";
+import {
+  Department,
+  KnownForDepartment,
+  MediaType,
+  OriginalLanguage,
+  OriginCountry,
+} from "./common";
 
 export interface Person {
   adult: boolean;
@@ -23,12 +29,12 @@ export interface Person {
   combined_credits: CombinedCredits;
 }
 
-export interface CombinedCredits {
+interface CombinedCredits {
   cast: Cast[];
   crew: Cast[];
 }
 
-export interface Cast {
+interface Cast {
   adult?: boolean;
   backdrop_path: null | string;
   genre_ids: number[];
@@ -56,8 +62,43 @@ export interface Cast {
   job?: string;
 }
 
-export enum Department {
-  Creator = "Creator",
-  Production = "Production",
-  Writing = "Writing",
+export interface TrendingPerson {
+  page: number;
+  results: TrendingPersonResult[];
+  total_pages: number;
+  total_results: number;
+}
+
+interface TrendingPersonResult {
+  name: string;
+  gender: number;
+  known_for: KnownFor[];
+  known_for_department: KnownForDepartment;
+  id: number;
+  profile_path: null | string;
+  adult: boolean;
+  popularity: number;
+  media_type: "person";
+}
+
+interface KnownFor {
+  video?: boolean;
+  vote_average: number;
+  popularity: number;
+  overview: string;
+  release_date?: string;
+  id: number;
+  adult?: boolean;
+  backdrop_path: null | string;
+  media_type: "person";
+  genre_ids: number[];
+  title?: string;
+  original_language: OriginalLanguage;
+  original_title?: string;
+  poster_path: null | string;
+  vote_count: number;
+  first_air_date?: string;
+  original_name?: string;
+  origin_country?: string[];
+  name?: string;
 }

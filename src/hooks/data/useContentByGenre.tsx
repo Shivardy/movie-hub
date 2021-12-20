@@ -2,8 +2,8 @@ import { useQuery } from "react-query";
 import { queryClient } from "../../App";
 import { fetcher } from "../../services/api";
 import { MediaTypeExcludePerson } from "../../types/common";
-import { GenreMovies, MovieResult } from "../../types/Movies";
-import { GenreTv, TVResult } from "../../types/Tv";
+import { GenreMovies } from "../../types/Movies";
+import { GenreTv } from "../../types/Tv";
 import { queryKeys } from "../../utils/constants";
 import { getUrl, updateCacheData } from "../../utils/utils";
 
@@ -32,12 +32,12 @@ function useContentByGenre<T extends MediaTypeExcludePerson>(
         if (type === "movie") {
           queryClient.setQueryData(
             queryKeys.movies,
-            updateCacheData(data as MovieResult[])
+            updateCacheData(data as GenreMovies["results"])
           );
         } else if (type === "tv") {
           queryClient.setQueryData(
             queryKeys.movies,
-            updateCacheData(data as TVResult[])
+            updateCacheData(data as GenreTv["results"])
           );
         }
       },

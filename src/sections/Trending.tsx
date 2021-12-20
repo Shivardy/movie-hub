@@ -4,8 +4,8 @@ import MediaScroller from "../components/MediaScroller";
 import { ButtonContainer, Header } from "../components/StyledElements";
 import useTrending from "../hooks/data/useTrending";
 import { MediaTypeExcludePerson } from "../types/common";
-import { MovieResult } from "../types/Movies";
-import { TVResult } from "../types/Tv";
+import { TrendingMovies } from "../types/Movies";
+import { TrendingTv } from "../types/Tv";
 import { getImageSrc, getReleaseDate } from "../utils/utils";
 
 const Trending = () => {
@@ -19,12 +19,12 @@ const Trending = () => {
     image: getImageSrc(item.poster_path, "poster"),
     title:
       selectedMedia === "movie"
-        ? (item as MovieResult).title
-        : (item as TVResult).name,
+        ? (item as TrendingMovies["results"][number]).title
+        : (item as TrendingTv["results"][number]).name,
     caption: getReleaseDate(
       selectedMedia === "movie"
-        ? (item as MovieResult).release_date
-        : (item as TVResult).first_air_date
+        ? (item as TrendingMovies["results"][number]).release_date
+        : (item as TrendingTv["results"][number]).first_air_date
     ),
   }));
 

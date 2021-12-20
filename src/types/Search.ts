@@ -1,10 +1,10 @@
 export interface SearchResult {
   page: number;
-  results: Result[];
+  results: SearchData[];
   total_pages: number;
   total_results: number;
 }
-type Result = Person | Movie | Tv;
+type SearchData = Person | Movie | Tv;
 
 interface Person {
   id: number;

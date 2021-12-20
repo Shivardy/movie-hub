@@ -65,6 +65,14 @@ export type OriginalLanguage = {
   [key: string]: string;
 };
 
+export type KnownForDepartment = {
+  [key: string]: string;
+};
+
+export type Department = {
+  [key: string]: string;
+};
+
 export type OriginCountry = {
   [key: string]: string;
 };

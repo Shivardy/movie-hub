@@ -1,16 +1,19 @@
 import { navigate } from "@reach/router";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { appContext } from "../AppContext";
 import Button from "../components/Button";
 import useSearch from "../hooks/data/useSearch";
-import useTrending from "../hooks/data/useTrending";
+import useTrending, { TrendingAll } from "../hooks/data/useTrending";
 import useDebounce from "../hooks/useDebounce";
 import Camera from "../icons/Camera";
 import Close from "../icons/Close";
 import MovieIcon from "../icons/MovieIcon";
 import PersonIcon from "../icons/PersonIcon";
 import SearchIcon from "../icons/SearchIcon";
+import TrendingIcon from "../icons/TrendingIcon";
+import { SearchResult } from "../types/Search";
+import { getImageSrc } from "../utils/utils";
 
 const SearchBarContainer = styled.div`
   display: flex;
@@ -75,22 +78,39 @@ const Backdrop = styled.div`
 
 const SearchResultContainer = styled.div`
   margin-block-start: ${(props) => props.theme.size.md};
-  padding: ${(props) => props.theme.size.sm};
   width: clamp(55%, calc(${(props) => props.theme.size.xxxl} * 10), 90%);
   background-color: ${(props) => props.theme.colors.surface2};
   height: 70%;
   border-radius: 1ex;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
-  overflow-y: scroll;
+
+  & > .search-header {
+    display: flex;
+    gap: ${(props) => props.theme.size.sm};
+    align-items: center;
+
+    background-color: ${(props) => props.theme.colors.surface1};
+    padding: ${(props) => props.theme.size.sm};
+    width: 100%;
+    border-top-right-radius: 1ex;
+    border-top-left-radius: 1ex;
+  }
+
+  & > .search-results {
+    padding: ${(props) => props.theme.size.sm};
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    overflow-y: scroll;
+    height: 90%;
+  }
 `;
 
 const SearchResultItem = styled.div`
   padding: ${(props) => props.theme.size.xxxs};
   width: 100%;
   display: flex;
+  align-items: center;
   gap: ${(props) => props.theme.size.sm};
   cursor: pointer;
 
@@ -99,6 +119,11 @@ const SearchResultItem = styled.div`
     & > path {
       stroke-width: 1;
     }
+  }
+
+  & > img {
+    height: 8ch;
+    object-fit: cover;
   }
 
   .search-item-details {
@@ -121,13 +146,29 @@ const Search = () => {
   const { displaySearch, dispatch } = appContext();
   const [searchValue, setSearchValue] = useState("");
   const debouceSearchValue = useDebounce(searchValue, 150);
-  const { data } = useSearch(debouceSearchValue);
-  const { data: trendingData } = useTrending("movie");
-  console.log(trendingData);
+  const { data = [] } = useSearch(debouceSearchValue);
+  const { data: trendingData = [] } = useTrending("all");
+
+  // Showing Trending if no search Query
+  const searchItems = debouceSearchValue ? data : trendingData;
+
   const closeSearch = useCallback(
     () => dispatch({ type: "DISPLAY_SEARCH", payload: !displaySearch }),
     [dispatch, displaySearch]
   );
+
+  const ref = useRef<HTMLDivElement>(null);
+  const escFunction = useCallback((e: KeyboardEvent) => {
+    if (e.key === "Escape") {
+      ref?.current?.click();
+    }
+  }, []);
+  useEffect(() => {
+    document.addEventListener("keydown", escFunction);
+    return () => {
+      document.removeEventListener("keydown", escFunction);
+    };
+  }, [escFunction]);
 
   return (
     <>
@@ -144,39 +185,40 @@ const Search = () => {
           <Close />
         </StyledButton>
       </SearchBarContainer>
-      <Backdrop onClick={closeSearch}>
+      <Backdrop onClick={closeSearch} ref={ref}>
         <SearchResultContainer onClick={(e) => e.stopPropagation()}>
-          {data?.map((item) => (
-            <SearchResultItem
-              key={`${item.media_type}-${item.id}`}
-              onClick={() => {
-                closeSearch();
-                navigate(
-                  `${process.env.PUBLIC_URL}/${item.media_type}/${item.id}`
-                );
-              }}
-            >
-              {item.media_type === "movie" ? (
-                <MovieIcon />
-              ) : item.media_type === "tv" ? (
-                <Camera />
-              ) : (
-                <PersonIcon />
-              )}
-              <div className="search-item-details">
-                <p>{item.media_type === "movie" ? item.title : item.name}</p>
-                <span>
-                  {`in ${
-                    item.media_type === "movie"
-                      ? "Movies"
-                      : item.media_type === "tv"
-                      ? "Tv Shows"
-                      : "People"
-                  }`}
-                </span>
-              </div>
-            </SearchResultItem>
-          ))}
+          <div className="search-header">
+            {debouceSearchValue ? <SearchIcon /> : <TrendingIcon />}
+            <h3>{debouceSearchValue ? "Search Results" : "Trending"}</h3>
+          </div>
+          <div className="search-results">
+            {searchItems.length === 0 ? <p>No Results Found 🙁</p> : null}
+            {searchItems?.map((item) => (
+              <SearchResultItem
+                key={`${item.media_type}-${item.id}`}
+                onClick={() => {
+                  closeSearch();
+                  navigate(
+                    `${process.env.PUBLIC_URL}/${item.media_type}/${item.id}`
+                  );
+                }}
+              >
+                {renderSearchItemImage(item)}
+                <div className="search-item-details">
+                  <p>{item.media_type === "movie" ? item.title : item.name}</p>
+                  <span>
+                    {`in ${
+                      item.media_type === "movie"
+                        ? "Movies"
+                        : item.media_type === "tv"
+                        ? "Tv Shows"
+                        : "People"
+                    }`}
+                  </span>
+                </div>
+              </SearchResultItem>
+            ))}
+          </div>
         </SearchResultContainer>
       </Backdrop>
     </>
@@ -184,3 +226,29 @@ const Search = () => {
 };
 
 export default Search;
+
+function renderSearchItemImage(
+  item: SearchResult["results"][number] | TrendingAll["results"][number]
+) {
+  if (item.media_type === "movie") {
+    const img = getImageSrc(item.poster_path, "poster");
+    return item.poster_path ? (
+      <img src={img.src} alt={item.title} srcSet={img.srcset}></img>
+    ) : (
+      <MovieIcon />
+    );
+  } else if (item.media_type === "tv") {
+    const img = getImageSrc(item.poster_path, "poster");
+    return item.poster_path ? (
+      <img src={img.src} alt={item.name} srcSet={img.srcset}></img>
+    ) : (
+      <Camera />
+    );
+  }
+  const img = getImageSrc(item.profile_path, "profile");
+  return item.profile_path ? (
+    <img src={img.src} alt={item.name} srcSet={img.srcset}></img>
+  ) : (
+    <PersonIcon />
+  );
+}

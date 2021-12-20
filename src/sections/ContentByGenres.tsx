@@ -6,8 +6,8 @@ import { ButtonContainer, Header } from "../components/StyledElements";
 import useContentByGenre from "../hooks/data/useContentByGenre";
 import useGenres from "../hooks/data/useGenres";
 import { MediaTypeExcludePerson } from "../types/common";
-import { MovieResult } from "../types/Movies";
-import { TVResult } from "../types/Tv";
+import { GenreMovies } from "../types/Movies";
+import { GenreTv } from "../types/Tv";
 import { getImageSrc, getReleaseDate } from "../utils/utils";
 import GenreSection from "./GenreSection";
 
@@ -49,12 +49,12 @@ const ContentByGenres = () => {
     image: getImageSrc(item.poster_path, "poster"),
     title:
       selectedMedia === "movie"
-        ? (item as MovieResult).title
-        : (item as TVResult).name,
+        ? (item as GenreMovies["results"][number]).title
+        : (item as GenreTv["results"][number]).name,
     caption: getReleaseDate(
       selectedMedia === "movie"
-        ? (item as MovieResult).release_date
-        : (item as TVResult).first_air_date
+        ? (item as GenreMovies["results"][number]).release_date
+        : (item as GenreTv["results"][number]).first_air_date
     ),
   }));
 

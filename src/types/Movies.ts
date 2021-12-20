@@ -23,9 +23,12 @@ export interface UpcomingMovies {
   total_results: number;
 }
 
+interface TrendingMovieResult extends MovieResult {
+  media_type: "movie";
+}
 export interface TrendingMovies {
   page: number;
-  results: MovieResult[];
+  results: TrendingMovieResult[];
   total_pages: number;
   total_results: number;
 }
@@ -42,7 +45,7 @@ interface Dates {
   minimum: string;
 }
 
-export interface MovieResult {
+interface MovieResult {
   adult: boolean;
   backdrop_path: string;
   genre_ids: number[];
