@@ -1,15 +1,15 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from "react";
 
 interface Options extends IntersectionObserverInit {
   triggerOnce?: boolean;
 }
 
 const useInView = ({
-  triggerOnce,
+  triggerOnce = false,
   threshold = 0,
   root = null,
-  rootMargin = '0%',
-}: Options) => {
+  rootMargin = "0%",
+}: Options = {}) => {
   const ref = useRef<any>(null);
   const [inView, setInView] = useState(false);
   useEffect(() => {

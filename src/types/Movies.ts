@@ -44,6 +44,12 @@ interface Dates {
   maximum: string;
   minimum: string;
 }
+export interface DiscoverMovies {
+  page: number;
+  results: MovieResult[];
+  total_pages: number;
+  total_results: number;
+}
 
 interface MovieResult {
   adult: boolean;

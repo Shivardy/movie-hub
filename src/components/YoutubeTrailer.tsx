@@ -45,7 +45,7 @@ const YoutubeTrailer = ({ name, youtubeKey, onClose }: YoutubeTrailerProps) => (
     <Iframe
       title={name}
       id="ytplayer"
-      src={`https://www.youtube.com/embed/${youtubeKey}?autoplay=1`}
+      src={`https://www.youtube.com/embed/${youtubeKey}?&autoplay=1&mute=1`}
       frameBorder="0"
       allowFullScreen
     />

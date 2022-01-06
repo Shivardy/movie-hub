@@ -57,7 +57,11 @@ const Movie = (props: MovieProps) => {
       image: getImageSrc(backdrop_path, "backdrop"),
       caption: getReleaseDate(release_date),
     }));
-  const [, recommendationGridItemWidth] = getImageHeightAndWidth("16/9", 7);
+  const mediaItemSize = 7;
+  const [, recommendationGridItemWidth] = getImageHeightAndWidth(
+    "16/9",
+    mediaItemSize
+  );
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -171,7 +175,7 @@ const Movie = (props: MovieProps) => {
                 item={item}
                 ratio="16/9"
                 mediaType={"movie"}
-                size={7}
+                size={mediaItemSize}
               />
             ))}
           </div>

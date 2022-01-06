@@ -41,12 +41,32 @@ const Nav = styled.nav`
         span {
           display: none;
         }
+        svg {
+          color: ${(props) => props.theme.colors.brand};
+        }
       }
     }
 
     div {
       display: flex;
       padding-inline: ${(props) => props.theme.size.lg};
+    }
+  }
+
+  .nav-items {
+    display: flex;
+    gap: ${(props) => props.theme.size.xs};
+
+    & > a {
+      padding: ${(props) => props.theme.size.xxs};
+      font-size: ${(props) => props.theme.size.md};
+      border-radius: 1ex;
+
+      &:hover {
+        cursor: pointer;
+        color: ${(props) => props.theme.colors.text2};
+        background-color: ${(props) => props.theme.colors.surface1};
+      }
     }
   }
 `;
@@ -75,9 +95,9 @@ const NavBar = () => {
           <MovieDB />
           <span>MovieHub</span>
         </Link>
-        <div>
-          <StyledButton onClick={console.log}>Movie</StyledButton>
-          <StyledButton onClick={console.log}>Tv</StyledButton>
+        <div className="nav-items">
+          <Link to={`${process.env.PUBLIC_URL}/movie`}>Movie</Link>
+          <Link to={`${process.env.PUBLIC_URL}/tv`}>Tv</Link>
         </div>
       </div>
       <div className="nav-logos">

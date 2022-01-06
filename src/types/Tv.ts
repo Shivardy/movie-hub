@@ -21,9 +21,16 @@ export interface TrendingTv {
 
 export interface GenreTv {
   page: number;
-  results: TVResult[];
+  results: TrendingTvResult[];
   total_pages: number;
   total_results: number;
+}
+
+export interface DiscoverTv {
+  page: number;
+  results: TVResult[];
+  total_pages: number;
+  total_TVResults: number;
 }
 
 interface TVResult {
@@ -40,7 +47,6 @@ interface TVResult {
   genre_ids: number[];
   original_language: string;
   popularity: number;
-  media_type: MediaType;
 }
 
 export interface Tv {

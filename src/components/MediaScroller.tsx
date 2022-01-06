@@ -8,7 +8,7 @@ import {
   getImageHeightAndWidth,
   isTouchScreen,
 } from "../utils/utils";
-import MediaListItem from "./MediaListItem";
+import MediaListItem, { ListItemType } from "./MediaListItem";
 
 const Div = styled.div`
   position: relative;
@@ -84,16 +84,6 @@ const MediaItem = styled.li<MediaItemProps>`
   block-size: min-content;
 `;
 
-type ListItemType = {
-  id: number;
-  image: {
-    src: string;
-    srcset: string;
-  };
-  title: string;
-  caption?: string;
-};
-
 type MediaScrollerProps = {
   list: ListItemType[];
   ratio?: ImageRatio;
@@ -110,7 +100,10 @@ const MediaScroller = ({
   const [height, width] = getImageHeightAndWidth(ratio);
   const mediaList = useRef<HTMLUListElement>(document.createElement("ul"));
   const [isHiddenLeftArrow, setIsHiddenLeftArrow] = useState(true);
-  const [isHiddenRightArrow, setIsHiddenRightArrow] = useState(false);
+  const { offsetWidth, scrollWidth } = mediaList.current;
+  const [isHiddenRightArrow, setIsHiddenRightArrow] = useState(
+    offsetWidth >= scrollWidth
+  );
 
   const scrollToRight = useCallback(() => {
     const { offsetWidth, scrollLeft } = mediaList.current;

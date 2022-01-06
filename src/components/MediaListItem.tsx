@@ -58,7 +58,7 @@ const Figcaption = styled.figcaption<{
   }
 `;
 
-type ListItemType = {
+export type ListItemType = {
   id: number;
   image: {
     src: string;

@@ -5,7 +5,7 @@ import Button from "./Button";
 export const Header = styled.header`
   display: grid;
   grid-auto-flow: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: start;
   padding-inline: ${(props) => props.theme.size.lg};
   padding-block: ${(props) => props.theme.size.xs};

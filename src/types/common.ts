@@ -6,6 +6,7 @@ export type ImageRatio = "2/3" | "1/1" | "16/9";
 
 export type MediaType = "movie" | "tv" | "person";
 export type MediaTypeExcludePerson = Exclude<MediaType, "person">;
+export type StatusType = "latest" | "upcoming";
 
 export type MovieType = "popular" | "upcoming";
 

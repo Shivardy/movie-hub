@@ -1,5 +1,5 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
 type StyledButtonProps = { primary: boolean };
 const StyledButton = styled.button<StyledButtonProps>`
@@ -20,7 +20,7 @@ const StyledButton = styled.button<StyledButtonProps>`
     if (primary) {
       return theme.colors.text1;
     }
-    return 'inherit';
+    return "inherit";
   }};
 
   text-transform: capitalize;
